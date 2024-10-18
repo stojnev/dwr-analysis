@@ -1,5 +1,4 @@
 import numpy as np
-import pyaudio
 from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE
 
 def calculate_peak_frequency(numData):
