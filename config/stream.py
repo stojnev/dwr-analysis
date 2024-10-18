@@ -1,0 +1,8 @@
+import pyaudio
+
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 16000
+CHUNK = 16000
+THRESHOLD = 100000
+DEVICE = 0
