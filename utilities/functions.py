@@ -7,3 +7,6 @@ def calculatePeakFrequency(numData):
     peakIndex = np.argmax(arrayMagnitude)
     peakFreq = peakIndex * RATE / CHUNK
     return peakFreq
+
+def calculatedBFromPercent(percentValue):
+    return 20 * np.log10(percentValue)
