@@ -5,6 +5,7 @@ from utilities.devices import get_Devices
 from utilities.functions import calculatedBFromPercent
 from tabulate import tabulate
 import pyaudio
+import numpy as np
 from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE
 
 TARGET_RPM = 33.3333
@@ -16,7 +17,7 @@ def main():
 
     # Set up audio input.
     audioP = pyaudio.PyAudio()
-    streamAudio = audioP.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
+    streamAudio = audioP.open(format=FORMAT, channels=2, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
 
     try:
         while True:
@@ -27,7 +28,7 @@ def main():
             print("4. Get IMD")
             print("5. Exit")
 
-            choice = input("Enter your choice (1-4): ")
+            choice = input("Enter your choice (1-5): ")
 
             if choice == '1':
                 listDevices = get_Devices()
@@ -40,12 +41,32 @@ def main():
 
             if choice == '3':
                 while True:
-                    detected_frequency, wow_percent, flutter_percent, joint_wf = get_WF(streamAudio, WF_FREQUENCY)
-                    print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
-                        f"Detected Frequency: {detected_frequency:.2f} Hz | "
-                        f"WOW: {wow_percent:.4f} % | "
-                        f"FLUTTER: {flutter_percent:.4f} % | "
-                        f"JOINT W&F: {joint_wf:.4f} %")
+                    detected_frequency, wow_percent, flutter_percent, wf = get_WF(streamAudio, WF_FREQUENCY)
+                    if CHANNELS == 1:
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
+                            f"Detected Frequency: {detected_frequency[0]:.2f} Hz | "
+                            f"WOW: {wow_percent[0]:.4f} % | "
+                            f"FLUTTER: {flutter_percent[0]:.4f} % | "
+                            f"JOINT W&F: {wf[0]:.4f} %")
+                    if CHANNELS == 2:
+                        print("-" * 40)
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
+                            f"Detected Frequency (L): {detected_frequency[0]:.2f} Hz | "
+                            f"WOW (L): {wow_percent[0]:.4f} % | "
+                            f"FLUTTER (L): {flutter_percent[0]:.4f} % | "
+                            f"W&F (L): {wf[0]:.4f} %")
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
+                            f"Detected Frequency (R): {detected_frequency[1]:.2f} Hz | "
+                            f"WOW (R): {wow_percent[1]:.4f} % | "
+                            f"FLUTTER (R): {flutter_percent[1]:.4f} % | "
+                            f"W&F (R): {wf[1]:.4f} %")
+                        print("-" * 20)
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
+                            f"Detected Frequency (-): {np.mean(detected_frequency):.2f} Hz | "
+                            f"WOW (-): {np.mean(wow_percent):.4f} % | "
+                            f"FLUTTER (-): {np.mean(flutter_percent):.4f} % | "
+                            f"W&F (-): {np.mean(wf):.4f} %")
+                            
 
             if choice == '4':
                 while True:
