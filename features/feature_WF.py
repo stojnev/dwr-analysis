@@ -11,7 +11,7 @@ def get_WF(audioStream, freqReference):
 
     FFTwindow = np.hanning(CHUNK)
 
-    # Declare all the required variables as 
+    # Declare all the required variables as "two channel" arrays.
     FFTData = [0, 0], arrayFreq = [0, 0], arrayMagnitude = [0, 0], indexFFTL = [0, 0], freqDetected = [0, 0], freqDeviation = [0, 0], valueWowPercent = [0, 0], valueFlutter = [0, 0], valueFlutterPercent = [0, 0], valueWF = [0, 0]
 
     for channelX in range(CHANNELS):
