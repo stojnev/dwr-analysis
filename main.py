@@ -75,12 +75,29 @@ def main():
                             
             if choice == '4':
                 while True:
-
                     actual_freq1, actual_freq2, imd = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)
-                    print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
-                        f"Detected Frequencies: {actual_freq1:.2f} Hz, {actual_freq2:.2f} Hz | "
-                        f"IMD (%): {imd*100:.4f}% | "
-                        f"IMD (dB): {calculatedBFromPercent(imd):.2f} dB")
+
+                    if CHANNELS == 1:
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
+                            f"Detected Frequencies: {actual_freq1[0]:.2f} Hz, {actual_freq2[0]:.2f} Hz | "
+                            f"IMD (%): {imd[0]*100:.4f}% | "
+                            f"IMD (dB): {calculatedBFromPercent(imd[0]):.2f} dB")
+                    if CHANNELS == 2:
+                        print("-" * 40)
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
+                            f"Detected Frequencies: {actual_freq1[0]:.2f} Hz, {actual_freq2[0]:.2f} Hz | "
+                            f"IMD (%): {imd[0]*100:.4f}% | "
+                            f"IMD (dB): {calculatedBFromPercent(imd[0]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
+                            f"Detected Frequencies: {actual_freq1[1]:.2f} Hz, {actual_freq2[1]:.2f} Hz | "
+                            f"IMD (%): {imd[1]*100:.4f}% | "
+                            f"IMD (dB): {calculatedBFromPercent(imd[1]):.2f} dB")
+                        print("-" * 20)
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
+                            f"Detected Frequencies: {np.mean(actual_freq1):.2f} Hz, {np.mean(actual_freq2):.2f} Hz | "
+                            f"IMD (%): {np.mean(imd)*100:.4f}% | "
+                            f"IMD (dB): {calculatedBFromPercent(np.mean(imd)):.2f} dB")
+
                     
             if choice == '5':
                 print("Exiting...")
