@@ -28,80 +28,52 @@ def main():
             print("4. Get IMD")
             print("5. Exit")
 
-            choice = input("Enter your choice (1-5): ")
+            choiceX = input("Enter your choice (1-5): ")
 
-            if choice == '1':
+            if choiceX == '1':
                 listDevices = get_Devices()
                 print(tabulate(listDevices, headers="keys", tablefmt="pretty"))
 
-            if choice == '2':
+            if choiceX == '2':
                 while True:
-                    peak_frequency, RPM = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM)
+                    peakFrequency, RPM = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM)
                     if CHANNELS == 1:
-                        print(f"Peak Frequency: {peak_frequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Peak Frequency: {peak_frequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
-                        print(f"Peak Frequency: {peak_frequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {RPM[1] - TARGET_RPM:+.4f}")
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
+                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {RPM[1] - TARGET_RPM:+.4f}")
                         print("-" * 20)
-                        print(f"Peak Frequency: {np.mean(peak_frequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {np.mean(RPM):.4f}, Difference: {np.mean(RPM) - TARGET_RPM:+.4f}")
-            if choice == '3':
+                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {np.mean(RPM):.4f}, Difference: {np.mean(RPM) - TARGET_RPM:+.4f}")
+            
+            if choiceX == '3':
                 while True:
-                    detected_frequency, wow_percent, flutter_percent, wf = get_WF(streamAudio, WF_FREQUENCY)
+                    freqDetected, valueWowPercent, valueFlutterPercent, wf = get_WF(streamAudio, WF_FREQUENCY)
                     if CHANNELS == 1:
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
-                            f"Detected Frequency: {detected_frequency[0]:.2f} Hz | "
-                            f"WOW: {wow_percent[0]:.4f} % | "
-                            f"FLUTTER: {flutter_percent[0]:.4f} % | "
-                            f"JOINT W&F: {wf[0]:.4f} %")
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency: {freqDetected[0]:.2f} Hz | WOW: {valueWowPercent[0]:.4f} % | FLUTTER: {valueFlutterPercent[0]:.4f} % | JOINT W&F: {wf[0]:.4f} %")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
-                            f"Detected Frequency (L): {detected_frequency[0]:.2f} Hz | "
-                            f"WOW (L): {wow_percent[0]:.4f} % | "
-                            f"FLUTTER (L): {flutter_percent[0]:.4f} % | "
-                            f"W&F (L): {wf[0]:.4f} %")
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
-                            f"Detected Frequency (R): {detected_frequency[1]:.2f} Hz | "
-                            f"WOW (R): {wow_percent[1]:.4f} % | "
-                            f"FLUTTER (R): {flutter_percent[1]:.4f} % | "
-                            f"W&F (R): {wf[1]:.4f} %")
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (L): {freqDetected[0]:.2f} Hz | WOW (L): {valueWowPercent[0]:.4f} % | FLUTTER (L): {valueFlutterPercent[0]:.4f} % | W&F (L): {wf[0]:.4f} %")
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (R): {freqDetected[1]:.2f} Hz | WOW (R): {valueWowPercent[1]:.4f} % | FLUTTER (R): {valueFlutterPercent[1]:.4f} % | W&F (R): {wf[1]:.4f} %")
                         print("-" * 20)
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | "
-                            f"Detected Frequency (-): {np.mean(detected_frequency):.2f} Hz | "
-                            f"WOW (-): {np.mean(wow_percent):.4f} % | "
-                            f"FLUTTER (-): {np.mean(flutter_percent):.4f} % | "
-                            f"W&F (-): {np.mean(wf):.4f} %")
+                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (-): {np.mean(freqDetected):.2f} Hz | WOW (-): {np.mean(valueWowPercent):.4f} % | FLUTTER (-): {np.mean(valueFlutterPercent):.4f} % | W&F (-): {np.mean(wf):.4f} %")
                             
-            if choice == '4':
+            if choiceX == '4':
                 while True:
-                    actual_freq1, actual_freq2, imd = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)
-
+                    freqIMD1, freqIMD2, IMD = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)
                     if CHANNELS == 1:
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
-                            f"Detected Frequencies: {actual_freq1[0]:.2f} Hz, {actual_freq2[0]:.2f} Hz | "
-                            f"IMD (%): {imd[0]*100:.4f}% | "
-                            f"IMD (dB): {calculatedBFromPercent(imd[0]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[0]:.2f} Hz, {freqIMD2[0]:.2f} Hz | IMD (%): {IMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[0]):.2f} dB")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
-                            f"Detected Frequencies: {actual_freq1[0]:.2f} Hz, {actual_freq2[0]:.2f} Hz | "
-                            f"IMD (%): {imd[0]*100:.4f}% | "
-                            f"IMD (dB): {calculatedBFromPercent(imd[0]):.2f} dB")
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
-                            f"Detected Frequencies: {actual_freq1[1]:.2f} Hz, {actual_freq2[1]:.2f} Hz | "
-                            f"IMD (%): {imd[1]*100:.4f}% | "
-                            f"IMD (dB): {calculatedBFromPercent(imd[1]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[0]:.2f} Hz, {freqIMD2[0]:.2f} Hz | IMD (%): {IMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[0]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[1]:.2f} Hz, {freqIMD2[1]:.2f} Hz | IMD (%): {IMD[1]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[1]):.2f} dB")
                         print("-" * 20)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | "
-                            f"Detected Frequencies: {np.mean(actual_freq1):.2f} Hz, {np.mean(actual_freq2):.2f} Hz | "
-                            f"IMD (%): {np.mean(imd)*100:.4f}% | "
-                            f"IMD (dB): {calculatedBFromPercent(np.mean(imd)):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqIMD1):.2f} Hz, {np.mean(freqIMD2):.2f} Hz | IMD (%): {np.mean(IMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(IMD)):.2f} dB")
 
-                    
-            if choice == '5':
+            if choiceX == '5':
                 print("Exiting...")
                 break
+
     except KeyboardInterrupt:
         print("OUT!")
 

@@ -16,7 +16,7 @@ def get_IMD(audioStream, IMD_FREQ1, IMD_FREQ2):
 
     FFTwindow = np.hanning(CHUNK)
 
-    IMD, actual_IMD_FREQ1, actual_IMD_FREQ2 = [0, 0], [0, 0], [0, 0]
+    IMD, freqIMD1, freqIMD2 = [0, 0], [0, 0], [0, 0]
 
     for channelX in range(CHANNELS):
 
@@ -53,7 +53,7 @@ def get_IMD(audioStream, IMD_FREQ1, IMD_FREQ2):
             powerIMD += arrayMagnitude[indexIMD] ** 2
 
         IMD[channelX] = np.sqrt(powerIMD) / np.sqrt(fundamentalPowerIMD1 + fundamentalPowerIMD2)
-        actual_IMD_FREQ1[channelX] = calculatePeakFrequency(numDataM[channelX])
-        actual_IMD_FREQ2[channelX] = calculatePeakFrequency(numDataM[channelX], 1)
+        freqIMD1[channelX] = calculatePeakFrequency(numDataM[channelX])
+        freqIMD2[channelX] = calculatePeakFrequency(numDataM[channelX], 1)
 
-    return actual_IMD_FREQ1, actual_IMD_FREQ2, IMD
+    return freqIMD1, freqIMD2, IMD
