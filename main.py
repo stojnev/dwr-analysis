@@ -36,9 +36,15 @@ def main():
 
             if choice == '2':
                 while True:
-                    peak_frequency, rpm = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM)
-                    print(f"Peak Frequency: {peak_frequency:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {rpm:.4f}, Difference: {rpm - TARGET_RPM:+.4f}")
-
+                    peak_frequency, RPM = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM)
+                    if CHANNELS == 1:
+                        print(f"Peak Frequency: {peak_frequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
+                    if CHANNELS == 2:
+                        print("-" * 40)
+                        print(f"Peak Frequency: {peak_frequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
+                        print(f"Peak Frequency: {peak_frequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {RPM[1] - TARGET_RPM:+.4f}")
+                        print("-" * 20)
+                        print(f"Peak Frequency: {np.mean(peak_frequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {np.mean(RPM):.4f}, Difference: {np.mean(RPM) - TARGET_RPM:+.4f}")
             if choice == '3':
                 while True:
                     detected_frequency, wow_percent, flutter_percent, wf = get_WF(streamAudio, WF_FREQUENCY)
@@ -67,7 +73,6 @@ def main():
                             f"FLUTTER (-): {np.mean(flutter_percent):.4f} % | "
                             f"W&F (-): {np.mean(wf):.4f} %")
                             
-
             if choice == '4':
                 while True:
 
