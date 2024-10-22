@@ -17,7 +17,7 @@ def main():
 
     # Set up audio input.
     audioP = pyaudio.PyAudio()
-    streamAudio = audioP.open(format=FORMAT, channels=2, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
+    streamAudio = audioP.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
 
     try:
         while True:

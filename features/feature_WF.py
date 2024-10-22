@@ -7,7 +7,11 @@ def get_WF(audioStream, freqReference):
     numData = np.frombuffer(numData, dtype=np.int16)
 
     # Split the stereo stream in two channels.
-    numDataM = [numData[0::2], numData[1::2]]
+    if (CHANNELS == 1):
+        numDataM = []
+        numDataM.append(numData)
+    if (CHANNELS == 2):
+        numDataM = [numData[0::2], numData[1::2]]
 
     FFTwindow = np.hanning(CHUNK)
 
