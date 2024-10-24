@@ -5,7 +5,7 @@ from utilities.functions import calculatePeakFrequency
 def get_IMD(audioStream, IMD_FREQ1, IMD_FREQ2):
 
     numData = audioStream.read(CHUNK, exception_on_overflow=False)
-    numData = np.frombuffer(numData, dtype=np.int16)
+    numData = np.frombuffer(numData, dtype=np.float32)
 
     # Split the stereo stream in two channels.
     if CHANNELS == 1:

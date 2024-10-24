@@ -5,7 +5,7 @@ from utilities.functions import calculatePeakFrequency
 def get_RPM(audioStream, TARGET_FREQUENCY, TARGET_RPM):
 
     numData = audioStream.read(CHUNK, exception_on_overflow=False)
-    numData = np.frombuffer(numData, dtype=np.int16)
+    numData = np.frombuffer(numData, dtype=np.float32)
 
     # Split the stereo stream in two channels.
     if CHANNELS == 1:

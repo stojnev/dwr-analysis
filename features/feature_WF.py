@@ -4,7 +4,7 @@ from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE
 def get_WF(audioStream, freqReference):
     
     numData = audioStream.read(CHUNK, exception_on_overflow=False)
-    numData = np.frombuffer(numData, dtype=np.int16)
+    numData = np.frombuffer(numData, dtype=np.float32)
 
     # Split the stereo stream in two channels.
     if CHANNELS == 1:
