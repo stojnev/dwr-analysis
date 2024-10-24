@@ -20,3 +20,6 @@ Run `main.py` and be presented with a list of currently supported functions, i.e
 2. **Get RPM** calculates RPM based on `TARGET_RPM` and listening to `WF_FREQUENCY`.
 3. **Get W&F** calculates wow, flutter and joing W&F based on listening to `WF_FREQUENCY`.
 4. **Get IMD** calculates IMD based on listening to `IMD_FREQ1` and `IMD_FREQ2`.
+5. **Get THD+N** calculates THD+N based on the input stream.
+
+Note there still are many validation issues across the board with pending fixes.

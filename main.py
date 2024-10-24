@@ -1,6 +1,7 @@
 from features.feature_RPM import get_RPM
 from features.feature_WF import get_WF
 from features.feature_IMD import get_IMD
+from features.feature_THD import get_THDN
 from utilities.devices import get_Devices
 from utilities.functions import calculatedBFromPercent
 from tabulate import tabulate
@@ -26,9 +27,10 @@ def main():
             print("2. Get RPM")
             print("3. Get W&F")
             print("4. Get IMD")
-            print("5. Exit")
+            print("5. Get THD+N")
+            print("6. Exit")
 
-            choiceX = input("Enter your choice (1-5): ")
+            choiceX = input("Enter your choice (1-6): ")
 
             if choiceX == '1':
                 listDevices = get_Devices()
@@ -71,6 +73,18 @@ def main():
                         print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqIMD1):.2f} Hz, {np.mean(freqIMD2):.2f} Hz | IMD (%): {np.mean(IMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(IMD)):.2f} dB")
 
             if choiceX == '5':
+                while True:
+                    peakFrequency, THDN, percentTHDN = get_THDN(streamAudio)
+                    if CHANNELS == 1:
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N (dB): {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
+                    if CHANNELS == 2:
+                        print("-" * 40)
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N: (dB){THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
+                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, THD+N: (dB) {THDN[1]:.4f} dB, THD+N (%): {percentTHDN[1]:.4f}")
+                        print("-" * 20)
+                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, THD+N: (dB) {np.mean(THDN):.4f} dB, THD+N (%): {np.mean(percentTHDN):.4f}")
+
+            if choiceX == '6':
                 print("Exiting...")
                 break
 
