@@ -79,7 +79,7 @@ def main():
                         print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N (dB): {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N: (dB){THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N: (dB) {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
                         print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, THD+N: (dB) {THDN[1]:.4f} dB, THD+N (%): {percentTHDN[1]:.4f}")
                         print("-" * 20)
                         print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, THD+N: (dB) {np.mean(THDN):.4f} dB, THD+N (%): {np.mean(percentTHDN):.4f}")

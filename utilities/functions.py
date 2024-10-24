@@ -42,5 +42,10 @@ def calculateTHDN(numData, harmonicDepth = 5):
             powerHarmonic = powerHarmonic + powerCurrentHarmonic
 
     # Calculate THD+N.
-    THDN = np.sqrt(powerHarmonic) / np.sqrt(powerFundamental)
-    return freqFundamental, calculatedBFromPercent(THDN), THDN
+    THDN = 0
+    percentTHDN = 0
+    if powerFundamental > 0:
+        THDN = np.sqrt(powerHarmonic) / np.sqrt(powerFundamental)
+        percentTHDN = calculatedBFromPercent(THDN)
+
+    return freqFundamental, percentTHDN, THDN

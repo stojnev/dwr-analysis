@@ -24,11 +24,20 @@ def get_WF(audioStream, freqReference):
         arrayFreq = np.fft.fftfreq(len(FFTData), 1/RATE)
         arrayMagnitude = np.abs(FFTData[:len(FFTData)//2])
         indexFFTL = np.argmax(arrayMagnitude)
-        freqDetected[channelX] = abs(arrayFreq[indexFFTL])
-        freqDeviation = freqDetected[channelX] - freqReference
-        valueWowPercent[channelX] = (abs(freqDeviation) / freqReference) * 100
-        valueFlutter[channelX] = np.std(arrayMagnitude)
-        valueFlutterPercent[channelX] = (valueFlutter[channelX] / np.max(arrayMagnitude)) * 100
-        valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
+
+        # Set basic values in case no audio data.
+        freqDetected[channelX] = 0
+        valueWowPercent[channelX] = 0
+        valueFlutterPercent[channelX] = 0
+        valueWF[channelX] = 0
+
+        # Proceed with calculation provided audio data exists.
+        if np.max(arrayMagnitude) > 0:
+            freqDetected[channelX] = abs(arrayFreq[indexFFTL])
+            freqDeviation = freqDetected[channelX] - freqReference
+            valueWowPercent[channelX] = (abs(freqDeviation) / freqReference) * 100
+            valueFlutter[channelX] = np.std(arrayMagnitude)
+            valueFlutterPercent[channelX] = (valueFlutter[channelX] / np.max(arrayMagnitude)) * 100
+            valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
     
     return freqDetected, valueWowPercent, valueFlutterPercent, valueWF
