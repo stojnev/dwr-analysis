@@ -8,6 +8,9 @@ from tabulate import tabulate
 import pyaudio
 import numpy as np
 from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE
+from config.stream import SPLITBUFFER_RESOLUTION, SPLITBUFFER_FREQUENCY
+
+SPLITBUFFER_SMALLCHUNK = 4410
 
 TARGET_RPM = 33.3333
 WF_FREQUENCY = 3150
@@ -18,7 +21,8 @@ def main():
 
     # Set up audio input.
     audioP = pyaudio.PyAudio()
-    streamAudio = audioP.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
+    #streamAudio = audioP.open(format=FORMAT, channels=CHANNELS, rate=16000, input=True, frames_per_buffer=CHUNK, input_device_index=DEVICE)
+    streamAudio = audioP.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=SPLITBUFFER_SMALLCHUNK, input_device_index=DEVICE)
 
     try:
         while True:

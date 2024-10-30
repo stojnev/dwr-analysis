@@ -17,6 +17,11 @@ def calculatePeakFrequency(numData, nextPeak=0):
         peakFreq = nextPeakFreq
     return peakFreq
 
+def calculatePeakFreq(numData):
+    FFTValues = np.fft.rfft(numData)
+    peakIndex = np.argmax(np.abs(FFTValues))
+    return peakIndex * (RATE / len(numData))
+
 def calculatedBFromPercent(percentValue):
     return 20 * np.log10(percentValue)
 

@@ -5,7 +5,7 @@ from utilities.functions import calculateTHDN
 def get_THDN(audioStream):
 
     numData = audioStream.read(CHUNK, exception_on_overflow=False)
-    numData = np.frombuffer(numData, dtype=np.float32)
+    numData = np.frombuffer(numData, dtype=np.int16)
 
     # Split the stereo stream in two channels.
     if CHANNELS == 1:
