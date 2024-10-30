@@ -10,11 +10,11 @@ def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM):
     FFTwindow = np.hamming(LARGE_CHUNK)
 
     if CHANNELS == 1:
-        bufferAudio = np.zeros((OVERLAP_COUNT, OVERLAP_SIZE), dtype=np.float32)
-        dataPartial = np.frombuffer(dataAudio, dtype=np.float32)
+        bufferAudio = np.zeros((OVERLAP_COUNT, OVERLAP_SIZE), dtype=np.int16)
+        dataPartial = np.frombuffer(dataAudio, dtype=np.int16)
     else:    
-        bufferAudio = np.zeros((OVERLAP_COUNT, OVERLAP_SIZE, CHANNELS), dtype=np.float32)
-        dataPartial = np.frombuffer(dataAudio, dtype=np.float32).reshape(-1, 2)
+        bufferAudio = np.zeros((OVERLAP_COUNT, OVERLAP_SIZE, CHANNELS), dtype=np.int16)
+        dataPartial = np.frombuffer(dataAudio, dtype=np.int16).reshape(-1, 2)
     indexBuffer = 0 
 
     bufferAudio[indexBuffer] = dataPartial

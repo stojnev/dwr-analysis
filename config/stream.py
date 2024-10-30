@@ -1,6 +1,6 @@
 import pyaudio
 
-FORMAT = pyaudio.paFloat32
+FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
 CHUNK = 16000
