@@ -24,7 +24,6 @@ def get_WF(streamAudio, freqReference):
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
 
     for channelX in range(CHANNELS):
-        numData[channelX] = numData[channelX] * FFTwindow
         FFTData = np.fft.fft(numData[channelX])
         arrayFreq = np.fft.fftfreq(len(FFTData), 1/RATE)
         arrayMagnitude = np.abs(FFTData[:len(FFTData)//2])

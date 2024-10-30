@@ -26,9 +26,6 @@ def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM):
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
     
     for channelX in range(CHANNELS):
-        if len(numData[channelX]) < LARGE_CHUNK:
-            numData[channelX]= np.pad(numData[channelX], (0, LARGE_CHUNK - len(numData[0])), 'constant')
-        numData[channelX] = numData[channelX] * FFTwindow
         peakFreq[channelX] = calculatePeakFreq(numData[channelX])
         RPM[channelX] = (peakFreq[channelX] / TARGET_FREQUENCY) * TARGET_RPM
 
