@@ -1,7 +1,7 @@
 import pyaudio
 
 FORMAT = pyaudio.paFloat32
-CHANNELS = 1
+CHANNELS = 2
 RATE = 44100
 CHUNK = 16000
 THRESHOLD = 100000
