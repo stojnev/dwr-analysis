@@ -1,5 +1,5 @@
 import numpy as np
-from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE
+from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE
 
 def calculatePeakFreq(numData):
     FFTValues = np.fft.rfft(numData)

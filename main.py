@@ -7,7 +7,7 @@ from utilities.functions import calculatedBFromPercent
 from tabulate import tabulate
 import pyaudio
 import numpy as np
-from config.stream import FORMAT, CHANNELS, RATE, CHUNK, THRESHOLD, DEVICE, SMALL_CHUNK
+from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE, SMALL_CHUNK
 
 TARGET_RPM = 33.3333
 WF_FREQUENCY = 3150

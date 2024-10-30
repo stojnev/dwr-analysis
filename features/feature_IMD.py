@@ -2,7 +2,7 @@ import numpy as np
 from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE
 from utilities.functions import calculateProperPeakFrequency, getAmplitudeFromFrequency
 
-def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2):
+def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, harmonicDepth = 5):
 
     IMD, freqIMD1, freqIMD2 = [0, 0], [0, 0], [0, 0]
 
@@ -31,15 +31,17 @@ def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2):
         arrayFrequencies = np.fft.rfftfreq(len(numData[channelX]), d=1/RATE)
         arrayAmplitudes = np.abs(FFTData)
 
-        freqIMD = [
-            IMD_FREQ1 + IMD_FREQ2,
-            np.abs(IMD_FREQ1 - IMD_FREQ2),
-            np.abs(2*IMD_FREQ1 - IMD_FREQ2),
-            np.abs(2*IMD_FREQ2 - IMD_FREQ1),
-            np.abs(3*IMD_FREQ1 - 2*IMD_FREQ2),
-            np.abs(3*IMD_FREQ2 - 2*IMD_FREQ1)
-        ]
-
+        freqIMD = []
+        for indexF in range(0, harmonicDepth):
+            modifierL = 1 + indexF
+            modifierR = indexF
+            if indexF == 0:
+                modifierR = 1
+                freqIMD.append(np.abs(modifierL * IMD_FREQ1 + modifierR * IMD_FREQ2))
+            else:
+                freqIMD.append(np.abs(modifierL * IMD_FREQ1 - modifierR * IMD_FREQ2))
+            freqIMD.append(np.abs(modifierL * IMD_FREQ2 - modifierR * IMD_FREQ1))
+        
         powerIMD = 0
 
         for indexIMD in freqIMD:
