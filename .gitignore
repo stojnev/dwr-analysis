@@ -1,13 +1,16 @@
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / Optimized / DLL
 __pycache__/
 config/__pycache__
 features/__pycache__
 *.py[cod]
 *$py.class
 
-#OS junk files
+# OS Junk
 [Tt]humbs.db
 *.DS_Store
 .DS_Store
 endpoints/.DS_Store
 storage/reports/*.json
+
+# Work in Progress
+working_*.py
