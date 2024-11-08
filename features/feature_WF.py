@@ -1,9 +1,9 @@
 import numpy as np
-from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE
+from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE, WF_SECONDS, SPLITBUFFER_FREQUENCY
 
 def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
-    freqDetected, freqDeviation, valueWowPercent, valueFlutter, valueFlutterPercent, valueWF = [0, 0], 0, [0, 0], [0, 0], [0, 0], [0, 0]
+    freqDetected, freqDeviation, valueWowPercent, valueFlutterPercent, valueWF = [0, 0], 0, [0, 0], [0, 0], [0, 0]
     dataAudio = streamAudio.read(SMALL_CHUNK, exception_on_overflow=False)
     FFTwindow = np.hamming(LARGE_CHUNK)
 
@@ -22,6 +22,10 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
         numData = [bufferAudio.flatten() * FFTwindow]
     else:
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
+
+    if (WF_SECONDS * SPLITBUFFER_FREQUENCY) > 0:
+        if (len(arrayFlutterStorage) > WF_SECONDS * SPLITBUFFER_FREQUENCY):
+            arrayFlutterStorage.pop(0)
 
     for channelX in range(CHANNELS):
         FFTData = np.fft.fft(numData[channelX])
