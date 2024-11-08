@@ -1,7 +1,7 @@
 import numpy as np
 from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE
 
-def get_WF(streamAudio, freqReference):
+def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
     freqDetected, freqDeviation, valueWowPercent, valueFlutter, valueFlutterPercent, valueWF = [0, 0], 0, [0, 0], [0, 0], [0, 0], [0, 0]
     dataAudio = streamAudio.read(SMALL_CHUNK, exception_on_overflow=False)
@@ -29,19 +29,27 @@ def get_WF(streamAudio, freqReference):
         arrayMagnitude = np.abs(FFTData[:len(FFTData)//2])
         indexFFTL = np.argmax(arrayMagnitude)
 
-        # Set basic values in case no audio data.
         freqDetected[channelX] = 0
         valueWowPercent[channelX] = 0
         valueFlutterPercent[channelX] = 0
         valueWF[channelX] = 0
 
-        # Proceed with calculation provided audio data exists.
         if np.max(arrayMagnitude) > 0:
             freqDetected[channelX] = abs(arrayFreq[indexFFTL])
             freqDeviation = freqDetected[channelX] - freqReference
             valueWowPercent[channelX] = (abs(freqDeviation) / freqReference) * 100
-            valueFlutter[channelX] = np.std(arrayMagnitude)
-            valueFlutterPercent[channelX] = (valueFlutter[channelX] / np.max(arrayMagnitude)) * 100
-            valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
-    
-    return freqDetected, valueWowPercent, valueFlutterPercent, valueWF
+        
+    if CHANNELS == 1:
+        arrayFlutterStorage.append(abs(freqReference - freqDetected[0]))
+        if (len(arrayFlutterStorage) > 1):
+            valueFlutterPercent[0] = np.std(arrayFlutterStorage) / freqReference * 100
+            valueWF[0] = (valueWowPercent[0] + valueFlutterPercent[0]) / 2
+    else:
+        arrayFlutterStorage.append([abs(freqReference - freqDetected[0]), abs(freqReference - freqDetected[1])])
+        if (len(arrayFlutterStorage) > 1):
+            for channelX in range(CHANNELS):
+                arrayFlutterX = [arrayFlutterStorageX[channelX] for arrayFlutterStorageX in arrayFlutterStorage]
+                valueFlutterPercent[channelX] = np.std(arrayFlutterX) / freqReference * 100
+                valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
+
+    return freqDetected, valueWowPercent, valueFlutterPercent, valueWF, arrayFlutterStorage
