@@ -42,14 +42,14 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
     if CHANNELS == 1:
         arrayFlutterStorage.append(abs(freqReference - freqDetected[0]))
         if (len(arrayFlutterStorage) > 1):
-            valueFlutterPercent[0] = np.std(arrayFlutterStorage) / freqReference * 100
+            valueFlutterPercent[0] = np.std(arrayFlutterStorage, ddof=1) / freqReference * 100
             valueWF[0] = (valueWowPercent[0] + valueFlutterPercent[0]) / 2
     else:
         arrayFlutterStorage.append([abs(freqReference - freqDetected[0]), abs(freqReference - freqDetected[1])])
         if (len(arrayFlutterStorage) > 1):
             for channelX in range(CHANNELS):
                 arrayFlutterX = [arrayFlutterStorageX[channelX] for arrayFlutterStorageX in arrayFlutterStorage]
-                valueFlutterPercent[channelX] = np.std(arrayFlutterX) / freqReference * 100
+                valueFlutterPercent[channelX] = np.std(arrayFlutterX, ddof=1) / freqReference * 100
                 valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
 
     return freqDetected, valueWowPercent, valueFlutterPercent, valueWF, arrayFlutterStorage
