@@ -47,3 +47,11 @@ def calculateProperPeakFrequency(frequencyTarget, arrayFrequencies, arrayAmplitu
 
 def getAmplitudeFromFrequency(frequencyTarget, arrayFrequencies, arrayAmplitudes):
     return arrayAmplitudes[np.argmin(np.abs(arrayFrequencies - frequencyTarget))]
+
+def getDINCorrectedWF(freqDeviation):
+    arrayFrequencies = np.array([0.2, 0.315, 0.4, 0.63, 0.8, 1.0, 1.6, 2.0, 4.0, 6.3, 10, 20, 40, 63, 100, 200])
+    arrayVoltageGains = np.array([0.02951209227, 0.1035142167, 0.177827941, 0.3801893963, 0.5011872336, 0.6165950019, 0.8128305162, 0.9015711376, 1, 0.9015711376, 0.7852356346, 0.5069907083, 0.301995172, 0.19498446, 0.1364583137, 0.07079457844])
+    returnValue = 0
+    if not (freqDeviation < arrayFrequencies[0] or freqDeviation > arrayFrequencies[-1]):
+        returnValue = np.interp(freqDeviation, arrayFrequencies, arrayVoltageGains)
+    return returnValue
