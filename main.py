@@ -51,15 +51,15 @@ def main():
             if choiceX == '3':
                 arrayFlutterStorage = []
                 while True:
-                    freqDetected, valueWowPercent, valueFlutterPercent, valueWF, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
+                    freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
                     if CHANNELS == 1:
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency: {freqDetected[0]:.2f} Hz | WOW: {valueWowPercent[0]:.4f} % | FLUTTER: {valueFlutterPercent[0]:.4f} % | JOINT W&F: {valueWF[0]:.4f} %")
+                        print(f"Ref: {WF_FREQUENCY:.2f} Hz | Freq: {freqDetected[0]:.2f} Hz | WOW: {valueWowPercent[0]:.4f} % | FLUTTER: {valueFlutterPercent[0]:.4f} % | JOINT W&F: {valueWF[0]:.4f} %")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (L): {freqDetected[0]:.2f} Hz | WOW (L): {valueWowPercent[0]:.4f} % | FLUTTER (L): {valueFlutterPercent[0]:.4f} % | W&F (L): {valueWF[0]:.4f} %")
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (R): {freqDetected[1]:.2f} Hz | WOW (R): {valueWowPercent[1]:.4f} % | FLUTTER (R): {valueFlutterPercent[1]:.4f} % | W&F (R): {valueWF[1]:.4f} %")
+                        print(f"Ref: {WF_FREQUENCY:.2f} Hz | Freq (L): {freqDetected[0]:.2f} Hz | WOW (L): {valueWowPercent[0]:.4f} % | WOW W (L): {valueWowPercentWeighted[0]:.4f} % | FLUTTER (L): {valueFlutterPercent[0]:.4f} % | FLUTTER W (L): {valueFlutterPercentWeighted[0]:.4f} % | W&F (L): {valueWF[0]:.4f} % | W&F W (L): {valueWFW[0]:.4f} % | W&F RMS (L): {valueWFRMS[0]:.4f} % | W&F W RMS (L): {valueWFWRMS[0]:.4f} %")
+                        print(f"Ref: {WF_FREQUENCY:.2f} Hz | Freq (R): {freqDetected[1]:.2f} Hz | WOW (R): {valueWowPercent[1]:.4f} % | WOW W (R): {valueWowPercentWeighted[1]:.4f} % | FLUTTER (R): {valueFlutterPercent[1]:.4f} % | FLUTTER W (R): {valueFlutterPercentWeighted[1]:.4f} % | W&F (R): {valueWF[1]:.4f} % | W&F W (R): {valueWFW[1]:.4f} % | W&F RMS (L): {valueWFRMS[1]:.4f} % | W&F W RMS (L): {valueWFWRMS[1]:.4f} %")
                         print("-" * 20)
-                        print(f"Reference Frequency: {WF_FREQUENCY:.2f} Hz | Detected Frequency (-): {np.mean(freqDetected):.2f} Hz | WOW (-): {np.mean(valueWowPercent):.4f} % | FLUTTER (-): {np.mean(valueFlutterPercent):.4f} % | W&F (-): {np.mean(valueWF):.4f} %")
+                        print(f"Ref: {WF_FREQUENCY:.2f} Hz | Freq (-): {np.mean(freqDetected):.2f} Hz | WOW (-): {np.mean(valueWowPercent):.4f} % | FLUTTER (-): {np.mean(valueFlutterPercent):.4f} % | W&F (-): {np.mean(valueWF):.4f} %")
             if choiceX == '4':
                 while True:
                     freqIMD1, freqIMD2, IMD = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)

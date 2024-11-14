@@ -1,9 +1,11 @@
 import numpy as np
 from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE, WF_SECONDS, SPLITBUFFER_FREQUENCY
+from config.stream import WOW_LOWER_THRESHOLD, WOW_UPPER_THRESHOLD, FLUTTER_THRESHOLD
+from utilities.functions import getDINCorrectedWF
 
 def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
-    freqDetected, freqDeviation, valueWowPercent, valueFlutterPercent, valueWF = [0, 0], 0, [0, 0], [0, 0], [0, 0]
+    freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS = [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]
     dataAudio = streamAudio.read(SMALL_CHUNK, exception_on_overflow=False)
     FFTwindow = np.hamming(LARGE_CHUNK)
 
@@ -40,24 +42,40 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
         if np.max(arrayMagnitude) > 0:
             freqDetected[channelX] = abs(arrayFreq[indexFFTL])
-            freqDeviation = freqDetected[channelX] - freqReference
-            valueWowPercent[channelX] = (abs(freqDeviation) / freqReference) * 100
         
     if CHANNELS == 1:
         arrayFlutterStorage.append(freqDetected[0])
-        if (len(arrayFlutterStorage) > 1):
-            freqDetectedMean =  np.mean(arrayFlutterStorage)
-            arrayFlutterXD = arrayFlutterStorage - freqDetectedMean
-            valueFlutterPercent[channelX] = np.std(arrayFlutterXD, ddof=1) / freqDetectedMean * 100
-            valueWF[0] = (valueWowPercent[0] + valueFlutterPercent[0]) / 2
     else:
         arrayFlutterStorage.append([freqDetected[0], freqDetected[1]])
-        if (len(arrayFlutterStorage) > 1):
-            for channelX in range(CHANNELS):
+    if (len(arrayFlutterStorage) > 1):
+        for channelX in range(CHANNELS):
+            if CHANNELS == 1:
+                arrayFlutterX = arrayFlutterStorage
+            else:
                 arrayFlutterX = [arrayFlutterStorageX[channelX] for arrayFlutterStorageX in arrayFlutterStorage]
-                freqDetectedMean =  np.mean(arrayFlutterX)
-                arrayFlutterXD = arrayFlutterX - freqDetectedMean
-                valueFlutterPercent[channelX] = np.std(arrayFlutterXD, ddof=1) / freqDetectedMean * 100
-                valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
+            freqDetectedMean =  np.mean(arrayFlutterX)
+            arrayDeviation = arrayFlutterX - freqDetectedMean
+            arrayWowD = arrayDeviation[arrayDeviation <= WOW_UPPER_THRESHOLD]
+            arrayFlutterD = arrayDeviation[arrayDeviation > FLUTTER_THRESHOLD]
+            
+            if (len(arrayWowD) > 1):
+                arrayWowDC = correctWFWeight(arrayWowD)
+                valueWowPercent[channelX] = np.std(arrayWowD, ddof=1) / freqDetectedMean * 100
+                valueWowPercentWeighted[channelX] = np.std(arrayWowDC, ddof=1) / freqDetectedMean * 100
+            if (len(arrayFlutterD) > 1):
+                arrayFlutterDC = correctWFWeight(arrayFlutterD)
+                valueFlutterPercent[channelX] = np.std(arrayFlutterD, ddof=1) / freqDetectedMean * 100
+                valueFlutterPercentWeighted[channelX] = np.std(arrayFlutterDC, ddof=1) / freqDetectedMean * 100
+            valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
+            valueWFW[channelX] = (valueWowPercentWeighted[channelX] + valueFlutterPercentWeighted[channelX]) / 2
+            valueWFRMS[channelX] = np.sqrt(valueWowPercent[channelX] ** 2 + valueFlutterPercent[channelX] ** 2)
+            valueWFWRMS[channelX] = np.sqrt(valueWowPercentWeighted[channelX] ** 2 + valueFlutterPercentWeighted[channelX] ** 2)
 
-    return freqDetected, valueWowPercent, valueFlutterPercent, valueWF, arrayFlutterStorage
+    return freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, arrayFlutterStorage
+
+def correctWFWeight(arrayWF):
+    arrayReturn = []
+    for arrayX in range(len(arrayWF)):
+        correctedValue = getDINCorrectedWF(arrayWF[arrayX]) * arrayWF[arrayX]
+        arrayReturn.append(correctedValue)
+    return arrayReturn
