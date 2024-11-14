@@ -44,16 +44,20 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
             valueWowPercent[channelX] = (abs(freqDeviation) / freqReference) * 100
         
     if CHANNELS == 1:
-        arrayFlutterStorage.append(abs(freqReference - freqDetected[0]))
+        arrayFlutterStorage.append(freqDetected[0])
         if (len(arrayFlutterStorage) > 1):
-            valueFlutterPercent[0] = np.std(arrayFlutterStorage, ddof=1) / freqReference * 100
+            freqDetectedMean =  np.mean(arrayFlutterStorage)
+            arrayFlutterXD = arrayFlutterStorage - freqDetectedMean
+            valueFlutterPercent[channelX] = np.std(arrayFlutterXD, ddof=1) / freqDetectedMean * 100
             valueWF[0] = (valueWowPercent[0] + valueFlutterPercent[0]) / 2
     else:
-        arrayFlutterStorage.append([abs(freqReference - freqDetected[0]), abs(freqReference - freqDetected[1])])
+        arrayFlutterStorage.append([freqDetected[0], freqDetected[1]])
         if (len(arrayFlutterStorage) > 1):
             for channelX in range(CHANNELS):
                 arrayFlutterX = [arrayFlutterStorageX[channelX] for arrayFlutterStorageX in arrayFlutterStorage]
-                valueFlutterPercent[channelX] = np.std(arrayFlutterX, ddof=1) / freqReference * 100
+                freqDetectedMean =  np.mean(arrayFlutterX)
+                arrayFlutterXD = arrayFlutterX - freqDetectedMean
+                valueFlutterPercent[channelX] = np.std(arrayFlutterXD, ddof=1) / freqDetectedMean * 100
                 valueWF[channelX] = (valueWowPercent[channelX] + valueFlutterPercent[channelX]) / 2
 
     return freqDetected, valueWowPercent, valueFlutterPercent, valueWF, arrayFlutterStorage
