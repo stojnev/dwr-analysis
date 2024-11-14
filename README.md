@@ -22,4 +22,10 @@ Run `main.py` and be presented with a list of currently supported functions, i.e
 4. **Get IMD** calculates IMD based on listening to `IMD_FREQ1` and `IMD_FREQ2`.
 5. **Get THD+N** calculates THD+N based on the input stream.
 
-Note there still are many validation issues across the board with pending fixes.
+## Parameters
+
+Most of the parameters ar set within the config/stream.py file.
+
+At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering. Change at your own peril.
+
+This is very much a work in progress. Note there still may be many validation issues across the board with pending fixes.
