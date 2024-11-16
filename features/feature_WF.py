@@ -5,7 +5,7 @@ from utilities.functions import getDINCorrectedWF
 
 def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
-    freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS = [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]
+    freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference = [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]
     dataAudio = streamAudio.read(SMALL_CHUNK, exception_on_overflow=False)
     FFTwindow = np.hamming(LARGE_CHUNK)
 
@@ -39,9 +39,11 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
         valueWowPercent[channelX] = 0
         valueFlutterPercent[channelX] = 0
         valueWF[channelX] = 0
+        valueDifference[channelX] = 0
 
         if np.max(arrayMagnitude) > 0:
             freqDetected[channelX] = abs(arrayFreq[indexFFTL])
+            valueDifference[channelX] = (freqReference - freqDetected[channelX]) / 100
         
     if CHANNELS == 1:
         arrayFlutterStorage.append(freqDetected[0])
@@ -71,7 +73,7 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
             valueWFRMS[channelX] = np.sqrt(valueWowPercent[channelX] ** 2 + valueFlutterPercent[channelX] ** 2)
             valueWFWRMS[channelX] = np.sqrt(valueWowPercentWeighted[channelX] ** 2 + valueFlutterPercentWeighted[channelX] ** 2)
 
-    return freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, arrayFlutterStorage
+    return freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference, arrayFlutterStorage
 
 def correctWFWeight(arrayWF):
     arrayReturn = []

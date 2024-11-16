@@ -55,3 +55,14 @@ def getDINCorrectedWF(freqDeviation):
     if not (freqDeviation < arrayFrequencies[0] or freqDeviation > arrayFrequencies[-1]):
         returnValue = np.interp(freqDeviation, arrayFrequencies, arrayVoltageGains)
     return returnValue
+
+def getChannelName(channelNumber):
+    nameChannel = 'M'
+    if CHANNELS > 1:
+        if channelNumber == 1:
+            nameChannel = 'L'
+        if channelNumber == 2:
+            nameChannel = 'R'
+        if channelNumber > 2:
+            nameChannel = channelNumber
+    return nameChannel
