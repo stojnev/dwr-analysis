@@ -24,7 +24,7 @@ Run `main.py` and be presented with a list of currently supported functions, i.e
 
 ## Parameters
 
-Most of the parameters ar set within the config/stream.py file.
+Most of the parameters ar set within the `config/stream.py` file.
 
 At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering. Change at your own peril.
 

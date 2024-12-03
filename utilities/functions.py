@@ -1,10 +1,19 @@
 import numpy as np
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE
 
-def calculatePeakFreq(numData):
-    FFTValues = np.fft.rfft(numData)
-    peakIndex = np.argmax(np.abs(FFTValues))
-    return peakIndex * (RATE / len(numData))
+def calculatePeakFreq(numData, optionExpanded=0):
+    FFTData = np.fft.rfft(numData)
+    FFTFreqs = np.fft.rfftfreq(len(numData), d=1/RATE)
+    arrayMagnitude = np.abs(FFTData)
+    indexPeakFrequency = np.argmax(arrayMagnitude)
+    valuePeakFrequency = FFTFreqs[indexPeakFrequency]
+    valueAmplitude = arrayMagnitude[indexPeakFrequency]
+    valueAmplitudeDB = 20 * np.log10(valueAmplitude + 1e-10)
+    valuePhaseDegrees = np.degrees(np.angle(FFTData[indexPeakFrequency]))
+    if optionExpanded == 1:
+        return valuePeakFrequency, valueAmplitude, valueAmplitudeDB, valuePhaseDegrees
+    else:
+        return valuePeakFrequency
 
 def calculatedBFromPercent(percentValue):
     return 20 * np.log10(percentValue)

@@ -35,7 +35,6 @@ def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM, arrayRPMStorage):
         arrayRPMStorage.append(calculatePeakFreq(numData[0]))
     else:
         arrayRPMStorage.append([calculatePeakFreq(numData[0]), calculatePeakFreq(numData[1])])
-
     for channelX in range(CHANNELS):
         if CHANNELS == 1:
             arrayRPMX = arrayRPMStorage
