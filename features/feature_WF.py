@@ -28,6 +28,8 @@ def get_WF(streamAudio, freqReference, arrayFlutterStorage):
     if (WF_SECONDS * SPLITBUFFER_FREQUENCY) > 0:
         if (len(arrayFlutterStorage) > WF_SECONDS * SPLITBUFFER_FREQUENCY):
             arrayFlutterStorage.pop(0)
+    else:
+        arrayFlutterStorage = []
 
     for channelX in range(CHANNELS):
         FFTData = np.fft.fft(numData[channelX])

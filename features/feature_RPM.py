@@ -1,8 +1,8 @@
 import numpy as np
-from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK
+from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, WF_SECONDS, SPLITBUFFER_FREQUENCY
 from utilities.functions import calculatePeakFreq
 
-def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM):
+def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM, arrayRPMStorage):
 
     peakFreq, RPM = [0, 0], [0, 0]
 
@@ -24,9 +24,25 @@ def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM):
         numData = [bufferAudio.flatten() * FFTwindow]
     else:
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
+
+    if (WF_SECONDS * SPLITBUFFER_FREQUENCY) > 0:
+        if (len(arrayRPMStorage) > WF_SECONDS * SPLITBUFFER_FREQUENCY):
+            arrayRPMStorage.pop(0)
+    else: 
+        arrayRPMStorage = []
     
+    if CHANNELS == 1:
+        arrayRPMStorage.append(calculatePeakFreq(numData[0]))
+    else:
+        arrayRPMStorage.append([calculatePeakFreq(numData[0]), calculatePeakFreq(numData[1])])
+
     for channelX in range(CHANNELS):
-        peakFreq[channelX] = calculatePeakFreq(numData[channelX])
+        if CHANNELS == 1:
+            arrayRPMX = arrayRPMStorage
+        else:
+            arrayRPMX = [arrayRPMStorageX[channelX] for arrayRPMStorageX in arrayRPMStorage]
+
+        peakFreq[channelX] = np.mean(arrayRPMX)
         RPM[channelX] = (peakFreq[channelX] / TARGET_FREQUENCY) * TARGET_RPM
 
-    return peakFreq, RPM
+    return peakFreq, RPM, arrayRPMStorage

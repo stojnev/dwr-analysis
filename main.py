@@ -38,8 +38,9 @@ def main():
                 print(tabulate(listDevices, headers="keys", tablefmt="pretty"))
 
             if choiceX == '2':
+                arrayRPMStorage = []
                 while True:
-                    peakFrequency, RPM = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM)
+                    peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
                     if CHANNELS == 1:
                         print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
                     if CHANNELS == 2:
