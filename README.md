@@ -16,11 +16,17 @@ Run `main.py` and be presented with a list of currently supported functions, i.e
 
 ## Features
 
-1. **List Audio Devices** will display all available audio I/O devices on the current machine.
-2. **Get RPM** calculates RPM based on `TARGET_RPM` and listening to `WF_FREQUENCY`.
-3. **Get W&F** calculates wow, flutter and joint W&F based on listening to `WF_FREQUENCY`.
-4. **Get IMD** calculates IMD based on listening to `IMD_FREQ1` and `IMD_FREQ2`.
-5. **Get THD+N** calculates THD+N based on the input stream.
+With the *semblance* of a user interface, all possible functionalities are now listed within the `config\functionalities\test_functions.json`. That said, the *available* functionalities depend on the choices one makes regarding the available test records.
+
+When first running, the following options are available:
+
+A. **List Audio Devices** will display all available audio I/O devices on the current machine.
+B. **Get Current Test Record Configuration** will list all the test records you had selected you own.
+C. **Change Test Record Configuration** will allow you to select which test records you own.
+
+After this, the script will automatically determine which functionalities are available to you.
+
+Note that the list of supported test records resides within `config\functionalities\test_records.json`.
 
 ## Parameters
 
@@ -28,4 +34,4 @@ Most of the parameters ar set within the `config/stream.py` file.
 
 At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering. Change at your own peril.
 
-This is very much a work in progress. Note there still may be many validation issues across the board with pending fixes.
+*This is very much a work in progress. Note there still may be many validation issues across the board with pending fixes.*

@@ -27,6 +27,22 @@
         {
             "Name": "Channel Balance",
             "ID": 7
+        },
+        {
+            "Name": "Get RPM",
+            "ID": 11
+        },
+        {
+            "Name": "Get W&F",
+            "ID": 12
+        },
+        {
+            "Name": "Get IMD",
+            "ID": 13
+        },
+        {
+            "Name": "Get THD+N",
+            "ID": 14
         }
     ]
 }

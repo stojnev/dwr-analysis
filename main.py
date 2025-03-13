@@ -39,11 +39,6 @@ def main():
             print("C.  Change Test Record Configuration")
             print("-" * 15)
             printFunctionalityChoices()
-
-            #print("2. Get RPM")
-            #print("3. Get W&F")
-            #print("4. Get IMD")
-            #print("5. Get THD+N")
             print("-" * 15)
             print("X.  Exit\n")
 
@@ -87,7 +82,7 @@ def main():
 
 
 
-            if choiceX == '2':
+            if choiceX == '11':
                 arrayRPMStorage = []
                 while True:
                     peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
@@ -100,7 +95,7 @@ def main():
                         print("-" * 20)
                         print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {np.mean(RPM):.4f}, Difference: {np.mean(RPM) - TARGET_RPM:+.4f}")
             
-            if choiceX == '3':
+            if choiceX == '12':
                 arrayFlutterStorage = []
                 while True:
                     freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
@@ -115,7 +110,7 @@ def main():
                         print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {np.mean(valueWFWRMS):.4f} % |   {np.mean(valueDifference):+.4f} % |")
                         print("-" * 143)
                         print()
-            if choiceX == '4':
+            if choiceX == '13':
                 while True:
                     freqIMD1, freqIMD2, IMD = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)
                     if CHANNELS == 1:
@@ -127,7 +122,7 @@ def main():
                         print("-" * 20)
                         print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqIMD1):.2f} Hz, {np.mean(freqIMD2):.2f} Hz | IMD (%): {np.mean(IMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(IMD)):.2f} dB")
 
-            if choiceX == '5':
+            if choiceX == '14':
                 while True:
                     peakFrequency, THDN, percentTHDN = get_THDN(streamAudio)
                     if CHANNELS == 1:
