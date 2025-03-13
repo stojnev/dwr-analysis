@@ -20,9 +20,9 @@ With the *semblance* of a user interface, all possible functionalities are now l
 
 When first running, the following options are available:
 
-A. **List Audio Devices** will display all available audio I/O devices on the current machine.
-B. **Get Current Test Record Configuration** will list all the test records you had selected you own.
-C. **Change Test Record Configuration** will allow you to select which test records you own.
+* **List Audio Devices** will display all available audio I/O devices on the current machine.
+* **Get Current Test Record Configuration** will list all the test records you had selected you own.
+* **Change Test Record Configuration** will allow you to select which test records you own.
 
 After this, the script will automatically determine which functionalities are available to you.
 
