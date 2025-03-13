@@ -1,0 +1,103 @@
+{
+    "RECORDS": [
+        {
+            "Name": "Hi-Fi News Analogue Test LP",
+            "ID": 1,
+            "Functions": [
+                {
+                    "ID": 2,
+                    "Track": ["A6"],
+                    "Tones": [300]
+                },
+                {
+                    "ID": 5,
+                    "Track": ["A6"],
+                    "Tones": [300]
+                },
+                {
+                    "ID": 7,
+                    "Track": ["A6"],
+                    "Tones": [300]
+                }
+            ]
+        },
+        {
+            "Name": "The Ultimate Analogue Test LP",
+            "ID": 2,
+            "Functions": [
+                {
+                    "ID": 1,
+                    "Track": ["A2", "A3"],
+                    "Tones": [1000, 1000]
+                },
+                {
+                    "ID": 2,
+                    "Track": ["A10"],
+                    "Tones": [3150]
+                },
+                {
+                    "ID": 3,
+                    "Track": ["A10"],
+                    "Tones": [3150]
+                },
+                {
+                    "ID": 4,
+                    "Track": ["A9"],
+                    "Tones": [60, 4000]
+                },
+                {
+                    "ID": 5,
+                    "Track": ["B1"],
+                    "Tones": [315]
+                },
+                {
+                    "ID": 6,
+                    "Track": ["A9"],
+                    "Tones": [60, 4000]
+                },
+                {
+                    "ID": 7,
+                    "Track": ["A10"],
+                    "Tones": [3150]
+                }
+            ]
+        },
+        {
+            "Name": "Ortofon Test Record",
+            "ID": 3,
+            "Functions": [
+                {
+                    "ID": 1,
+                    "Track": ["A5", "A6"],
+                    "Tones": [1000, 1000]
+                },
+                {
+                    "ID": 5,
+                    "Track": ["A9"],
+                    "Tones": [315]
+                },
+                {
+                    "ID": 7,
+                    "Track": ["A9"],
+                    "Tones": [315]
+                }
+            ]
+        },
+        {
+            "Name": "Tacet Vinyl Check",
+            "ID": 4,
+            "Functions": [
+                {
+                    "ID": 2,
+                    "Track": ["A2"],
+                    "Tones": [3150]
+                },
+                {
+                    "ID": 3,
+                    "Track": ["A2"],
+                    "Tones": [3150]
+                }
+            ]
+        }
+    ]
+}

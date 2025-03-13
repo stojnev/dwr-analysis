@@ -1,0 +1,32 @@
+{
+    "FUNCTIONS": [
+        {
+            "Name": "Azimuth",
+            "ID": 1
+        },
+        {
+            "Name": "Speed Accuracy",
+            "ID": 2
+        },
+        {
+            "Name": "Wow & Flutter",
+            "ID": 3
+        },
+        {
+            "Name": "Vertical Tracking Angle",
+            "ID": 4
+        },
+        {
+            "Name": "Anti-Skating Force",
+            "ID": 5
+        },
+        {
+            "Name": "Vertical Tracking Force",
+            "ID": 6
+        },
+        {
+            "Name": "Channel Balance",
+            "ID": 7
+        }
+    ]
+}
