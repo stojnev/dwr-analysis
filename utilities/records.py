@@ -60,3 +60,31 @@ def getSetting(settingX):
             return "N/A"
     except:
         return "N/A"
+
+
+def getAvailableFunctionalities():
+    recordIDs = [int(id.strip()) for id in getSetting("TestRecordIDs").split(',')]
+    dataRecords = loadJSON(jsonRecordsFilePath)
+    funcUnique = set()
+
+    for recordX in dataRecords['RECORDS']:
+        if recordX['ID'] in recordIDs:
+            setFuncs = recordX['Functions']
+            for funcX in setFuncs:
+                funcUnique.add(funcX['ID'])
+    sortedIDs = sorted(funcUnique)
+    if not sortedIDs:
+        return "0"
+    
+    return sortedIDs
+
+def printFunctionalityChoices():
+    dataFunctionalities = loadJSON(jsonFunctionalitiesFilePath)
+    funcIDs = getAvailableFunctionalities()
+    dictFunctionality = {funcX['ID']: funcX['Name'] for funcX in dataFunctionalities['FUNCTIONS']}
+    for funcID in funcIDs:
+        if funcID in dictFunctionality:
+            if funcID < 10:
+                print(f"{funcID}.  {dictFunctionality[funcID]}")
+            else:
+                print(f"{funcID}. {dictFunctionality[funcID]}")

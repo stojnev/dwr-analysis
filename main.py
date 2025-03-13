@@ -11,6 +11,7 @@ from utilities.records import loadRecords
 from utilities.records import getSetRecordList
 from utilities.records import saveSetting
 from utilities.records import getSetting
+from utilities.records import printFunctionalityChoices
 from tabulate import tabulate
 import pyaudio
 import numpy as np
@@ -33,16 +34,18 @@ def main():
             clearConsole()
             
             print("\nSelect an option:\n")
-            print("A. List Audio Devices")
-            print("B. Get Current Test Record Configuration")
-            print("C. Change Test Record Configuration")
+            print("A.  List Audio Devices")
+            print("B.  Get Current Test Record Configuration")
+            print("C.  Change Test Record Configuration")
             print("-" * 15)
-            print("2. Get RPM")
-            print("3. Get W&F")
-            print("4. Get IMD")
-            print("5. Get THD+N")
+            printFunctionalityChoices()
+
+            #print("2. Get RPM")
+            #print("3. Get W&F")
+            #print("4. Get IMD")
+            #print("5. Get THD+N")
             print("-" * 15)
-            print("X. Exit\n")
+            print("X.  Exit\n")
 
             choiceX = input("Enter your choice: ")
 
