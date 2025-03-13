@@ -5,9 +5,16 @@ from features.feature_THD import get_THDN
 from utilities.devices import get_Devices
 from utilities.functions import calculatedBFromPercent
 from utilities.functions import getChannelName
+from utilities.functions import clearConsole
+from utilities.functions import sanitizeCommaInput
+from utilities.records import loadRecords
+from utilities.records import getSetRecordList
+from utilities.records import saveSetting
+from utilities.records import getSetting
 from tabulate import tabulate
 import pyaudio
 import numpy as np
+import time
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE, SMALL_CHUNK
 
 TARGET_RPM = 33.3333
@@ -23,19 +30,59 @@ def main():
 
     try:
         while True:
-            print("Select an option:")
-            print("1. List Audio Devices")
+            clearConsole()
+            
+            print("\nSelect an option:\n")
+            print("A. List Audio Devices")
+            print("B. Get Current Test Record Configuration")
+            print("C. Change Test Record Configuration")
+            print("-" * 15)
             print("2. Get RPM")
             print("3. Get W&F")
             print("4. Get IMD")
             print("5. Get THD+N")
-            print("6. Exit")
+            print("-" * 15)
+            print("X. Exit\n")
 
-            choiceX = input("Enter your choice (1-6): ")
+            choiceX = input("Enter your choice: ")
 
-            if choiceX == '1':
+            clearConsole()
+
+            if (choiceX == 'A' or choiceX == 'a'):
                 listDevices = get_Devices()
                 print(tabulate(listDevices, headers="keys", tablefmt="pretty"))
+                print("\nPress any key to return to the previous screen.")
+                choiceB = input()
+
+            if (choiceX == 'B' or choiceX == 'b'):
+                recordIDs = getSetting("TestRecordIDs")
+                tableX = getSetRecordList(recordIDs)
+                tableHeaders = ["Record Name", "Available Functionalities"]
+                print(tabulate(tableX, headers=tableHeaders, tablefmt="grid"))
+                print("\nPress any key to return to the previous screen.")
+                choiceB = input()
+
+            if (choiceX == 'C' or choiceX == 'c'):
+                records = loadRecords()
+
+                print("\nCurrently available test records for selection:\n")
+                for record in records:
+                    print(f"{record['ID']}: {record['Name']}")
+                choiceZ = input("\nSelect the records you own separated by commas or X to exit: ")
+                if (choiceZ == 'X' or choiceZ == 'x'):
+                    print("\nNo changes have been made.")
+                else:
+                    recordIDs = sanitizeCommaInput(choiceZ)
+                    saveSetting("TestRecordIDs", recordIDs)
+                    print("\nThe following records have been now set as your collection:\n")
+                    tableX = getSetRecordList(recordIDs)
+                    tableHeaders = ["Record Name", "Available Functionalities"]
+                    print(tabulate(tableX, headers=tableHeaders, tablefmt="grid"))
+
+                print("\nPress any key to return to the previous screen.")
+                choiceB = input()
+
+
 
             if choiceX == '2':
                 arrayRPMStorage = []
@@ -89,7 +136,7 @@ def main():
                         print("-" * 20)
                         print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, THD+N: (dB) {np.mean(THDN):.4f} dB, THD+N (%): {np.mean(percentTHDN):.4f}")
 
-            if choiceX == '6':
+            if (choiceX == 'X' or choiceX == 'x'):
                 print("Exiting...")
                 break
 

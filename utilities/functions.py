@@ -1,5 +1,16 @@
 import numpy as np
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE
+import os
+import platform
+import re
+
+def clearConsole():
+    systemX = platform.system()
+
+    if systemX == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 def calculatePeakFreq(numData, optionExpanded=0):
     FFTData = np.fft.rfft(numData)
@@ -75,3 +86,8 @@ def getChannelName(channelNumber):
         if channelNumber > 2:
             nameChannel = channelNumber
     return nameChannel
+
+def sanitizeCommaInput(stringX):
+    stringSanitized = re.sub(r'[^0-9,]', '', stringX)
+    stringSanitized = re.sub(r',+', ',', stringSanitized)
+    return stringSanitized.strip(',')
