@@ -1,6 +1,6 @@
 import numpy as np
 from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, WF_SECONDS, SPLITBUFFER_FREQUENCY
-from utilities.functions import calculatePeakFreq
+from utilities.functions import calculatePeakFreq, colorTextGreen, colorTextRed, colorTextYellow
 
 def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM, arrayRPMStorage):
 
@@ -45,3 +45,17 @@ def get_RPM(streamAudio, TARGET_FREQUENCY, TARGET_RPM, arrayRPMStorage):
         RPM[channelX] = (peakFreq[channelX] / TARGET_FREQUENCY) * TARGET_RPM
 
     return peakFreq, RPM, arrayRPMStorage
+
+def calculateRPMDeviation(currentRPM, TARGET_RPM, acceptedDeviation = 0, calculatePercentage = False):
+    deviationX = currentRPM - TARGET_RPM
+    percentSign = ""
+    if calculatePercentage:
+        deviationX = deviationX / TARGET_RPM * 100
+        deviationBad = abs(deviationX) > acceptedDeviation
+        percentSign = "%"
+    else:
+        deviationBad = abs(deviationX / TARGET_RPM * 100) > acceptedDeviation
+    if (acceptedDeviation > 0 and deviationBad):
+        return colorTextRed(f"{deviationX:+.4f}{percentSign}")
+    else:
+        return colorTextGreen(f"{deviationX:+.4f}{percentSign}")

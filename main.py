@@ -1,4 +1,5 @@
 from features.feature_RPM import get_RPM
+from features.feature_RPM import calculateRPMDeviation
 from features.feature_WF import get_WF
 from features.feature_IMD import get_IMD
 from features.feature_THD import get_THDN
@@ -19,6 +20,7 @@ import time
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE, SMALL_CHUNK
 
 TARGET_RPM = 33.3333
+RPM_DEVIATION = 0.3
 WF_FREQUENCY = 3150
 IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
@@ -94,10 +96,11 @@ def main():
                         print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
                     if CHANNELS == 2:
                         print("-" * 40)
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
-                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {RPM[1] - TARGET_RPM:+.4f}")
+                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {calculateRPMDeviation(RPM[0], TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(RPM[0], TARGET_RPM, RPM_DEVIATION, True)}")
+                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {calculateRPMDeviation(RPM[1], TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(RPM[1], TARGET_RPM, RPM_DEVIATION, True)}")
                         print("-" * 20)
-                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {np.mean(RPM):.4f}, Difference: {np.mean(RPM) - TARGET_RPM:+.4f}")
+                        meanRPM = np.mean(RPM)
+                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {meanRPM:.4f}, Difference: {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION, True)}")
             
             if choiceX == '12':
                 arrayFlutterStorage = []
