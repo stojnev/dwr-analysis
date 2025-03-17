@@ -143,6 +143,11 @@
                     "Tones": [3150]
                 },
                 {
+                    "ID": 5,
+                    "Track": ["A2"],
+                    "Tones": [3150]
+                },
+                {
                     "ID": 11,
                     "Track": ["A2"],
                     "Tones": [3150]
@@ -156,6 +161,47 @@
                     "ID": 14,
                     "Track": ["A2"],
                     "Tones": [3150]
+                }
+            ]
+        },
+        {
+            "Name": "RTB Test Record",
+            "ID": 5,
+            "Functions": [
+                {
+                    "ID": 1,
+                    "Track": ["B1", "B2"],
+                    "Tones": [1000, 1000]
+                },
+                {
+                    "ID": 2,
+                    "Track": ["B5"],
+                    "Tones": [1000]
+                },
+                {
+                    "ID": 3,
+                    "Track": ["B5"],
+                    "Tones": [1000]
+                },
+                {
+                    "ID": 5,
+                    "Track": ["B5"],
+                    "Tones": [1000]
+                },
+                {
+                    "ID": 11,
+                    "Track": ["B5"],
+                    "Tones": [1000]
+                },
+                {
+                    "ID": 12,
+                    "Track": ["B5"],
+                    "Tones": [1000]
+                },
+                {
+                    "ID": 14,
+                    "Track": ["B5"],
+                    "Tones": [1000]
                 }
             ]
         }

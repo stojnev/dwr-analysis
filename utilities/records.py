@@ -1,5 +1,6 @@
 import json
 import tabulate
+from utilities.functions import colorTextRed, colorTextGreen, colorTextYellow
 
 jsonRecordsFilePath = 'config/functionalities/test_records.json'
 jsonFunctionalitiesFilePath = 'config/functionalities/test_functions.json'
@@ -57,34 +58,37 @@ def getSetting(settingX):
         if settingX in dataX:
             return dataX[settingX]
         else:
-            return "N/A"
+            return ""
     except:
-        return "N/A"
+        return ""
 
 
 def getAvailableFunctionalities():
-    recordIDs = [int(id.strip()) for id in getSetting("TestRecordIDs").split(',')]
-    dataRecords = loadJSON(jsonRecordsFilePath)
-    funcUnique = set()
+    settingX = getSetting("TestRecordIDs")
+    if settingX == "":
+        return ""
+    else:
+        recordIDs = [int(id.strip()) for id in settingX.split(',')]
+        dataRecords = loadJSON(jsonRecordsFilePath)
+        funcUnique = set()
 
-    for recordX in dataRecords['RECORDS']:
-        if recordX['ID'] in recordIDs:
-            setFuncs = recordX['Functions']
-            for funcX in setFuncs:
-                funcUnique.add(funcX['ID'])
-    sortedIDs = sorted(funcUnique)
-    if not sortedIDs:
-        return "0"
-    
-    return sortedIDs
+        for recordX in dataRecords['RECORDS']:
+            if recordX['ID'] in recordIDs:
+                setFuncs = recordX['Functions']
+                for funcX in setFuncs:
+                    funcUnique.add(funcX['ID'])
+        return sorted(funcUnique)
 
 def printFunctionalityChoices():
     dataFunctionalities = loadJSON(jsonFunctionalitiesFilePath)
     funcIDs = getAvailableFunctionalities()
-    dictFunctionality = {funcX['ID']: funcX['Name'] for funcX in dataFunctionalities['FUNCTIONS']}
-    for funcID in funcIDs:
-        if funcID in dictFunctionality:
-            if funcID < 10:
-                print(f"{funcID}.  {dictFunctionality[funcID]}")
-            else:
-                print(f"{funcID}. {dictFunctionality[funcID]}")
+    if funcIDs == "":
+        print(f"{colorTextRed("WARNING:")} No functionalities are available since you have not selected any test records.")
+    else:
+        dictFunctionality = {funcX['ID']: funcX['Name'] for funcX in dataFunctionalities['FUNCTIONS']}
+        for funcID in funcIDs:
+            if funcID in dictFunctionality:
+                if funcID < 10:
+                    print(f"{funcID}.  {dictFunctionality[funcID]}")
+                else:
+                    print(f"{funcID}. {dictFunctionality[funcID]}")

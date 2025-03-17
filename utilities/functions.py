@@ -91,3 +91,12 @@ def sanitizeCommaInput(stringX):
     stringSanitized = re.sub(r'[^0-9,]', '', stringX)
     stringSanitized = re.sub(r',+', ',', stringSanitized)
     return stringSanitized.strip(',')
+
+def colorTextRed(stringX):
+    return "\033[31m" + stringX + "\033[0m"
+
+def colorTextGreen(stringX):
+    return "\033[32m" + stringX + "\033[0m"
+
+def colorTextYellow(stringX):
+    return "\033[33m" + stringX + "\033[0m"

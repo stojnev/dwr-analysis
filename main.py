@@ -61,21 +61,25 @@ def main():
                 choiceB = input()
 
             if (choiceX == 'C' or choiceX == 'c'):
-                records = loadRecords()
+                recordList = loadRecords()
 
                 print("\nCurrently available test records for selection:\n")
-                for record in records:
-                    print(f"{record['ID']}: {record['Name']}")
+                for recordX in recordList:
+                    print(f"{recordX['ID']}: {recordX['Name']}")
                 choiceZ = input("\nSelect the records you own separated by commas or X to exit: ")
                 if (choiceZ == 'X' or choiceZ == 'x'):
                     print("\nNo changes have been made.")
                 else:
                     recordIDs = sanitizeCommaInput(choiceZ)
-                    saveSetting("TestRecordIDs", recordIDs)
-                    print("\nThe following records have been now set as your collection:\n")
-                    tableX = getSetRecordList(recordIDs)
-                    tableHeaders = ["Record Name", "Available Functionalities"]
-                    print(tabulate(tableX, headers=tableHeaders, tablefmt="grid"))
+                    clearConsole()
+                    if recordIDs == "":
+                        print("\nNo changes have been made.")
+                    else:
+                        saveSetting("TestRecordIDs", recordIDs)
+                        print("\nThe following records have been now set as your collection:\n")
+                        tableX = getSetRecordList(recordIDs)
+                        tableHeaders = ["Record Name", "Available Functionalities"]
+                        print(tabulate(tableX, headers=tableHeaders, tablefmt="grid"))
 
                 print("\nPress any key to return to the previous screen.")
                 choiceB = input()
