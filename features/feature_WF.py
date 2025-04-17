@@ -1,7 +1,7 @@
 import numpy as np
 from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE, WF_SECONDS, SPLITBUFFER_FREQUENCY
 from config.stream import WOW_LOWER_THRESHOLD, WOW_UPPER_THRESHOLD, FLUTTER_THRESHOLD
-from utilities.functions import getDINCorrectedWF
+from utilities.functions import getDINCorrectedWF, calculatePeakFreq, colorTextGreen, colorTextRed, colorTextYellow
 
 def get_WF(streamAudio, freqReference, arrayFlutterStorage):
 
@@ -83,3 +83,9 @@ def correctWFWeight(arrayWF):
         correctedValue = getDINCorrectedWF(arrayWF[arrayX]) * arrayWF[arrayX]
         arrayReturn.append(correctedValue)
     return arrayReturn
+
+def colorWFValuesNAB(valueWF):
+    if (valueWF > 0.1):
+        return colorTextRed(f"{valueWF:+.4f} %")
+    else:
+        return colorTextGreen(f"{valueWF:+.4f} %")

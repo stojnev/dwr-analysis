@@ -1,6 +1,6 @@
 from features.feature_RPM import get_RPM
 from features.feature_RPM import calculateRPMDeviation
-from features.feature_WF import get_WF
+from features.feature_WF import get_WF, colorWFValuesNAB
 from features.feature_IMD import get_IMD
 from features.feature_THD import get_THDN
 from utilities.devices import get_Devices
@@ -92,29 +92,32 @@ def main():
                 arrayRPMStorage = []
                 while True:
                     peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
-                    if CHANNELS == 1:
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {RPM[0] - TARGET_RPM:+.4f}")
-                    if CHANNELS == 2:
-                        print("-" * 40)
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[0]:.4f}, Difference: {calculateRPMDeviation(RPM[0], TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(RPM[0], TARGET_RPM, RPM_DEVIATION, True)}")
-                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {RPM[1]:.4f}, Difference: {calculateRPMDeviation(RPM[1], TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(RPM[1], TARGET_RPM, RPM_DEVIATION, True)}")
-                        print("-" * 20)
+                    if CHANNELS > 1:
+                        print("-" * 73)
+                        print("|   | Peak Frequency | Target RPM | RPM       | Difference | Percentage |")
+                        print("-" * 73)
+                    for channelX in range(CHANNELS):
+                        channelName = getChannelName(channelX + 1)
+                        print(f"| {channelName} | {peakFrequency[channelX]:.2f} Hz     | {TARGET_RPM:.4f}    | {RPM[channelX]:+.4f}  | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION)}     | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION, True)}  |")
+                    if CHANNELS > 1:
                         meanRPM = np.mean(RPM)
-                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, Target RPM: {TARGET_RPM:.4f}, RPM: {meanRPM:.4f}, Difference: {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION)} | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION, True)}")
-            
+                        print("-" * 73)
+                        print(f"| T | {np.mean(peakFrequency):.2f} Hz     | {TARGET_RPM:.4f}    | {meanRPM:+.4f}  | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION)}     | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION, True)}  |")
+                        print("-" * 73)
+
             if choiceX == '12':
                 arrayFlutterStorage = []
                 while True:
                     freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
                     print("-" * 143)
-                    print("|   | Reference  | Frequency  | Wow      | Flutter  | W&F Mean | W&F RMS  | Wow (W)  | Flutter (W) | W&F Mean (W) | W&F RMS (W) | Difference  |")
+                    print("|   | Reference  | Frequency  | Wow      | Flutter  | W&F Mean | W&F RMS  | Wow (W)  | Flutter (W) | W&F Mean (W) | W&F RMS (W)  | Difference  |")
                     print("-" * 143)
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
-                        print(f"| {channelName} | {WF_FREQUENCY:.2f} Hz | {freqDetected[channelX]:.2f} Hz | {valueWowPercent[channelX]:.4f} % | {valueFlutterPercent[channelX]:.4f} % | {valueWF[channelX]:.4f} % | {valueWFRMS[channelX]:.4f} % | {valueWowPercentWeighted[channelX]:.4f} % |    {valueFlutterPercentWeighted[channelX]:.4f} % |     {valueWFW[channelX]:.4f} % |    {valueWFWRMS[channelX]:.4f} % |   {valueDifference[channelX]:+.4f} % |")
+                        print(f"| {channelName} | {WF_FREQUENCY:.2f} Hz | {freqDetected[channelX]:.2f} Hz | {valueWowPercent[channelX]:.4f} % | {valueFlutterPercent[channelX]:.4f} % | {valueWF[channelX]:.4f} % | {valueWFRMS[channelX]:.4f} % | {valueWowPercentWeighted[channelX]:.4f} % |    {valueFlutterPercentWeighted[channelX]:.4f} % |     {valueWFW[channelX]:.4f} % |    {colorWFValuesNAB(np.mean(valueWFWRMS[channelX]))} |   {valueDifference[channelX]:+.4f} % |")
                     if CHANNELS > 1:
                         print("-" * 143)
-                        print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {np.mean(valueWFWRMS):.4f} % |   {np.mean(valueDifference):+.4f} % |")
+                        print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {colorWFValuesNAB(np.mean(valueWFWRMS))} |   {np.mean(valueDifference):+.4f} % |")
                         print("-" * 143)
                         print()
             if choiceX == '13':
