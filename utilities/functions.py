@@ -15,7 +15,10 @@ def clearConsole():
 def calculatePeakFreq(numData, optionExpanded=0):
     FFTData = np.fft.rfft(numData)
     FFTFreqs = np.fft.rfftfreq(len(numData), d=1/RATE)
-    arrayMagnitude = np.abs(FFTData)
+
+    arrayMagnitude = np.abs(FFTData) / len(numData)
+    arrayMagnitude[1:-1] *= 2
+    
     indexPeakFrequency = np.argmax(arrayMagnitude)
     valuePeakFrequency = FFTFreqs[indexPeakFrequency]
     valueAmplitude = arrayMagnitude[indexPeakFrequency]
@@ -100,3 +103,15 @@ def colorTextGreen(stringX):
 
 def colorTextYellow(stringX):
     return "\033[33m" + stringX + "\033[0m"
+
+def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0):
+    valueFormat = f"{valueX:+.4f}{' ' + valueUnit if valueUnit else ''}"
+    if (valueX > valueLimit):
+        return colorTextRed(valueFormat)
+    if (valueMed != 0):
+        if (valueX > valueMed):
+            return colorTextYellow(valueFormat)
+        else:
+            return colorTextGreen(valueFormat)
+    else:
+        return colorTextGreen(valueFormat)

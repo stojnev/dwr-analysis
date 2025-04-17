@@ -83,9 +83,3 @@ def correctWFWeight(arrayWF):
         correctedValue = getDINCorrectedWF(arrayWF[arrayX]) * arrayWF[arrayX]
         arrayReturn.append(correctedValue)
     return arrayReturn
-
-def colorWFValuesNAB(valueWF):
-    if (valueWF > 0.1):
-        return colorTextRed(f"{valueWF:+.4f} %")
-    else:
-        return colorTextGreen(f"{valueWF:+.4f} %")

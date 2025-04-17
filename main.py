@@ -1,18 +1,12 @@
 from features.feature_RPM import get_RPM
 from features.feature_RPM import calculateRPMDeviation
-from features.feature_WF import get_WF, colorWFValuesNAB
+from features.feature_WF import get_WF
 from features.feature_IMD import get_IMD
 from features.feature_THD import get_THDN
+from features.feature_Balance import get_ChannelBalance
 from utilities.devices import get_Devices
-from utilities.functions import calculatedBFromPercent
-from utilities.functions import getChannelName
-from utilities.functions import clearConsole
-from utilities.functions import sanitizeCommaInput
-from utilities.records import loadRecords
-from utilities.records import getSetRecordList
-from utilities.records import saveSetting
-from utilities.records import getSetting
-from utilities.records import printFunctionalityChoices
+from utilities.functions import calculatedBFromPercent, getChannelName, clearConsole, sanitizeCommaInput, colorValueByLimit
+from utilities.records import loadRecords, getSetRecordList, saveSetting, getSetting, printFunctionalityChoices
 from tabulate import tabulate
 import pyaudio
 import numpy as np
@@ -86,16 +80,31 @@ def main():
                 print("\nPress any key to return to the previous screen.")
                 choiceB = input()
 
-
+            if choiceX == '7':
+                arrayFreqStorage = []
+                arrayAmpStorage = []
+                while True:
+                    peakFrequency, AMP, arrayFreqStorage, arrayAmpStorage = get_ChannelBalance(streamAudio, arrayFreqStorage, arrayAmpStorage)
+                    tableData = []
+                    tableHeaders = [" ", "Peak Frequency", "Amplitude (dB)", "Difference (dB)"]
+                    for channelX in range(CHANNELS):
+                        channelName = getChannelName(channelX + 1)
+                        tableData.append([channelName, f"{peakFrequency[channelX]:.2f} Hz", f"{AMP[channelX]:+.4f} dB", f"{AMP[channelX] - np.mean(AMP):+.4f} dB"])
+                    if CHANNELS > 1:
+                        balanceDifference = AMP[0] - AMP[1]
+                        separatorRow = [" ", "-----", "-----", "-----"]
+                        totalRow = ["T", f"{np.mean(peakFrequency):.2f} Hz", "", f"{colorValueByLimit(balanceDifference, 1, "dB", 0.75)}"]
+                        tableData.extend([separatorRow, totalRow])
+                    print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right")))
+                    print()
 
             if choiceX == '11':
                 arrayRPMStorage = []
                 while True:
                     peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
-                    if CHANNELS > 1:
-                        print("-" * 73)
-                        print("|   | Peak Frequency | Target RPM | RPM       | Difference | Percentage |")
-                        print("-" * 73)
+                    print("-" * 73)
+                    print("|   | Peak Frequency | Target RPM | RPM       | Difference | Percentage |")
+                    print("-" * 73)
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
                         print(f"| {channelName} | {peakFrequency[channelX]:.2f} Hz     | {TARGET_RPM:.4f}    | {RPM[channelX]:+.4f}  | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION)}     | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION, True)}  |")
@@ -110,14 +119,14 @@ def main():
                 while True:
                     freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
                     print("-" * 143)
-                    print("|   | Reference  | Frequency  | Wow      | Flutter  | W&F Mean | W&F RMS  | Wow (W)  | Flutter (W) | W&F Mean (W) | W&F RMS (W)  | Difference  |")
+                    print("|   | Reference  | Frequency  | Difference  | Wow      | Flutter  | W&F Mean | W&F RMS  | Wow (W)  | Flutter (W) | W&F Mean (W) | W&F RMS (W)  |")
                     print("-" * 143)
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
-                        print(f"| {channelName} | {WF_FREQUENCY:.2f} Hz | {freqDetected[channelX]:.2f} Hz | {valueWowPercent[channelX]:.4f} % | {valueFlutterPercent[channelX]:.4f} % | {valueWF[channelX]:.4f} % | {valueWFRMS[channelX]:.4f} % | {valueWowPercentWeighted[channelX]:.4f} % |    {valueFlutterPercentWeighted[channelX]:.4f} % |     {valueWFW[channelX]:.4f} % |    {colorWFValuesNAB(np.mean(valueWFWRMS[channelX]))} |   {valueDifference[channelX]:+.4f} % |")
+                        print(f"| {channelName} | {WF_FREQUENCY:.2f} Hz | {freqDetected[channelX]:.2f} Hz |   {valueDifference[channelX]:+.4f} % | {valueWowPercent[channelX]:.4f} % | {valueFlutterPercent[channelX]:.4f} % | {valueWF[channelX]:.4f} % | {valueWFRMS[channelX]:.4f} % | {valueWowPercentWeighted[channelX]:.4f} % |    {valueFlutterPercentWeighted[channelX]:.4f} % |     {valueWFW[channelX]:.4f} % |    {colorValueByLimit(np.mean(valueWFWRMS[channelX]), 0.1, "%")} |")
                     if CHANNELS > 1:
                         print("-" * 143)
-                        print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {colorWFValuesNAB(np.mean(valueWFWRMS))} |   {np.mean(valueDifference):+.4f} % |")
+                        print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz |   {np.mean(valueDifference):+.4f} % | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {colorValueByLimit(np.mean(valueWFWRMS), 0.1, "%")} |")
                         print("-" * 143)
                         print()
             if choiceX == '13':
