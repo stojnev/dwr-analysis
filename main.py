@@ -13,9 +13,11 @@ import time
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE, SMALL_CHUNK
 
 TARGET_RPM = 33.3333
-RPM_DEVIATION_LIMIT = 0.3
-RPM_DEVIATION_PREFERRED = 0.15
+RPM_DEVIATION_LIMIT = 0.033
+RPM_DEVIATION_PREFERRED = 0.0165
 WF_FREQUENCY = 3150
+WF_DEVIATION_LIMIT = 0.1
+WF_DEVIATION_PREFERRED = 0.05
 IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
 
@@ -121,17 +123,17 @@ def main():
                 arrayFlutterStorage = []
                 while True:
                     freqDetected, valueWowPercent, valueFlutterPercent, valueWowPercentWeighted, valueFlutterPercentWeighted, valueWF, valueWFW, valueWFRMS, valueWFWRMS, valueDifference, arrayFlutterStorage = get_WF(streamAudio, WF_FREQUENCY, arrayFlutterStorage)
-                    print("-" * 143)
-                    print("|   | Reference  | Frequency  | Difference  | Wow      | Flutter  | W&F Mean | W&F RMS  | Wow (W)  | Flutter (W) | W&F Mean (W) | W&F RMS (W)  |")
-                    print("-" * 143)
+                    tableData = []
+                    tableHeaders = [" ", "Reference", "Peak Frequency", "Difference", "Wow", "Flutter", "W&F Mean", "W&F RMS", "Wow (W)", "Flutter (W)", "W&F Mean (W)", "W&F RMS (W)"]
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
-                        print(f"| {channelName} | {WF_FREQUENCY:.2f} Hz | {freqDetected[channelX]:.2f} Hz |   {valueDifference[channelX]:+.4f} % | {valueWowPercent[channelX]:.4f} % | {valueFlutterPercent[channelX]:.4f} % | {valueWF[channelX]:.4f} % | {valueWFRMS[channelX]:.4f} % | {valueWowPercentWeighted[channelX]:.4f} % |    {valueFlutterPercentWeighted[channelX]:.4f} % |     {valueWFW[channelX]:.4f} % |    {colorValueByLimit(np.mean(valueWFWRMS[channelX]), 0.1, "%")} |")
+                        tableData.append([channelName, f"{WF_FREQUENCY:.2f} Hz", f"{freqDetected[channelX]:.2f} Hz", f"{valueDifference[channelX]:+.4f} %", f"{valueWowPercent[channelX]:.4f} %", f"{valueFlutterPercent[channelX]:.4f} %", f"{valueWF[channelX]:.4f} %", f"{valueWFRMS[channelX]:.4f} %", f"{valueWowPercentWeighted[channelX]:.4f} %", f"{valueFlutterPercentWeighted[channelX]:.4f} %", f"{valueWFW[channelX]:.4f} %", f"{colorValueByLimit(np.mean(valueWFWRMS[channelX]), 0.1, "%")}"])
                     if CHANNELS > 1:
-                        print("-" * 143)
-                        print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz |   {np.mean(valueDifference):+.4f} % | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {colorValueByLimit(np.mean(valueWFWRMS), 0.1, "%")} |")
-                        print("-" * 143)
-                        print()
+                        separatorRow = [" ", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----"]
+                        totalRow = ["T", f"{WF_FREQUENCY:.2f} Hz", f"{np.mean(freqDetected):.2f} Hz", f"{np.mean(valueDifference):+.4f} %", f"{np.mean(valueWowPercent):.4f} %", f"{np.mean(valueFlutterPercent):.4f} %", f"{np.mean(valueWF):.4f} %", f"{np.mean(valueWFRMS):.4f} %", f"{np.mean(valueWowPercentWeighted):.4f} %", f"{np.mean(valueFlutterPercentWeighted):.4f} %", f"{np.mean(valueWFW):.4f} %", f"{colorValueByLimit(np.mean(valueWFWRMS), 0.1, "%")}"]
+                        tableData.extend([separatorRow, totalRow])
+                    print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right")))
+                    print()
            
             if choiceX == '13':
                 while True:
