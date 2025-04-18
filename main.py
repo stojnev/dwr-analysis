@@ -20,6 +20,9 @@ WF_DEVIATION_LIMIT = 0.1
 WF_DEVIATION_PREFERRED = 0.05
 IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
+freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
+freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
+
 
 def main():
 
@@ -103,8 +106,6 @@ def main():
             if choiceX == '11':
                 arrayRPMStorage = []
                 while True:
-                    freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
-                    freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
                     peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
                     tableData = []
                     tableHeaders = [" ", "Peak Frequency", "Target RPM", "Measured RPM", "Difference", "Percentage"]
@@ -127,10 +128,10 @@ def main():
                     tableHeaders = [" ", "Reference", "Peak Frequency", "Difference", "Wow", "Flutter", "W&F Mean", "W&F RMS", "Wow (W)", "Flutter (W)", "W&F Mean (W)", "W&F RMS (W)"]
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
-                        tableData.append([channelName, f"{WF_FREQUENCY:.2f} Hz", f"{freqDetected[channelX]:.2f} Hz", f"{valueDifference[channelX]:+.4f} %", f"{valueWowPercent[channelX]:.4f} %", f"{valueFlutterPercent[channelX]:.4f} %", f"{valueWF[channelX]:.4f} %", f"{valueWFRMS[channelX]:.4f} %", f"{valueWowPercentWeighted[channelX]:.4f} %", f"{valueFlutterPercentWeighted[channelX]:.4f} %", f"{valueWFW[channelX]:.4f} %", f"{colorValueByLimit(np.mean(valueWFWRMS[channelX]), 0.1, "%")}"])
+                        tableData.append([channelName, f"{WF_FREQUENCY:.2f} Hz", f"{colorValueByLimit(freqDetected[channelX], freqAllowedLimit, "Hz", freqAllowedPreferred, WF_FREQUENCY, ".2f")}", f"{valueDifference[channelX]:+.4f} %", f"{valueWowPercent[channelX]:.4f} %", f"{valueFlutterPercent[channelX]:.4f} %", f"{valueWF[channelX]:.4f} %", f"{valueWFRMS[channelX]:.4f} %", f"{colorValueByLimit(valueWowPercentWeighted[channelX], WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(valueFlutterPercentWeighted[channelX], WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(valueWFW[channelX], WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(valueWFWRMS[channelX], WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}"])
                     if CHANNELS > 1:
                         separatorRow = [" ", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----", "-----"]
-                        totalRow = ["T", f"{WF_FREQUENCY:.2f} Hz", f"{np.mean(freqDetected):.2f} Hz", f"{np.mean(valueDifference):+.4f} %", f"{np.mean(valueWowPercent):.4f} %", f"{np.mean(valueFlutterPercent):.4f} %", f"{np.mean(valueWF):.4f} %", f"{np.mean(valueWFRMS):.4f} %", f"{np.mean(valueWowPercentWeighted):.4f} %", f"{np.mean(valueFlutterPercentWeighted):.4f} %", f"{np.mean(valueWFW):.4f} %", f"{colorValueByLimit(np.mean(valueWFWRMS), 0.1, "%")}"]
+                        totalRow = ["T", f"{WF_FREQUENCY:.2f} Hz", f"{colorValueByLimit(np.mean(freqDetected), freqAllowedLimit, "Hz", freqAllowedPreferred, WF_FREQUENCY, ".2f")}", f"{np.mean(valueDifference):+.4f} %", f"{np.mean(valueWowPercent):.4f} %", f"{np.mean(valueFlutterPercent):.4f} %", f"{np.mean(valueWF):.4f} %", f"{np.mean(valueWFRMS):.4f} %", f"{colorValueByLimit(np.mean(valueWowPercentWeighted), WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(np.mean(valueFlutterPercentWeighted), WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(np.mean(valueWFW), WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}", f"{colorValueByLimit(np.mean(valueWFWRMS), WF_DEVIATION_LIMIT, "%", WF_DEVIATION_PREFERRED)}"]
                         tableData.extend([separatorRow, totalRow])
                     print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right")))
                     print()
