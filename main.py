@@ -1,5 +1,4 @@
 from features.feature_RPM import get_RPM
-from features.feature_RPM import calculateRPMDeviation
 from features.feature_WF import get_WF
 from features.feature_IMD import get_IMD
 from features.feature_THD import get_THDN
@@ -14,7 +13,8 @@ import time
 from config.stream import FORMAT, CHANNELS, RATE, THRESHOLD, DEVICE, SMALL_CHUNK
 
 TARGET_RPM = 33.3333
-RPM_DEVIATION = 0.3
+RPM_DEVIATION_LIMIT = 0.3
+RPM_DEVIATION_PREFERRED = 0.15
 WF_FREQUENCY = 3150
 IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
@@ -101,18 +101,21 @@ def main():
             if choiceX == '11':
                 arrayRPMStorage = []
                 while True:
+                    freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
+                    freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
                     peakFrequency, RPM, arrayRPMStorage = get_RPM(streamAudio, WF_FREQUENCY, TARGET_RPM, arrayRPMStorage)
-                    print("-" * 73)
-                    print("|   | Peak Frequency | Target RPM | RPM       | Difference | Percentage |")
-                    print("-" * 73)
+                    tableData = []
+                    tableHeaders = [" ", "Peak Frequency", "Target RPM", "Measured RPM", "Difference", "Percentage"]
                     for channelX in range(CHANNELS):
                         channelName = getChannelName(channelX + 1)
-                        print(f"| {channelName} | {peakFrequency[channelX]:.2f} Hz     | {TARGET_RPM:.4f}    | {RPM[channelX]:+.4f}  | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION)}     | {calculateRPMDeviation(RPM[channelX], TARGET_RPM, RPM_DEVIATION, True)}  |")
+                        tableData.append([channelName, f"{colorValueByLimit(peakFrequency[channelX], freqAllowedLimit, "Hz", freqAllowedPreferred, WF_FREQUENCY, ".2f")}", f"{TARGET_RPM:.4f}", f"{colorValueByLimit(RPM[channelX], RPM_DEVIATION_LIMIT, "", RPM_DEVIATION_PREFERRED, TARGET_RPM, ".4f")}", f"{colorValueByLimit(RPM[channelX], RPM_DEVIATION_LIMIT, "", RPM_DEVIATION_PREFERRED, TARGET_RPM, "+.4f", True)}", f"{colorValueByLimit(RPM[channelX], RPM_DEVIATION_LIMIT, "%", RPM_DEVIATION_PREFERRED, TARGET_RPM, "+.4f", False, True)}"])
                     if CHANNELS > 1:
                         meanRPM = np.mean(RPM)
-                        print("-" * 73)
-                        print(f"| T | {np.mean(peakFrequency):.2f} Hz     | {TARGET_RPM:.4f}    | {meanRPM:+.4f}  | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION)}     | {calculateRPMDeviation(meanRPM, TARGET_RPM, RPM_DEVIATION, True)}  |")
-                        print("-" * 73)
+                        separatorRow = [" ", "-----", "-----", "-----", "-----", "-----"]
+                        totalRow = ["T", f"{colorValueByLimit(np.mean(peakFrequency), freqAllowedLimit, "Hz", freqAllowedPreferred, WF_FREQUENCY, ".2f")}", f"{TARGET_RPM:.4f}", f"{colorValueByLimit(meanRPM, RPM_DEVIATION_LIMIT, "", RPM_DEVIATION_PREFERRED, TARGET_RPM, ".4f")}", f"{colorValueByLimit(meanRPM, RPM_DEVIATION_LIMIT, "", RPM_DEVIATION_PREFERRED, TARGET_RPM, "+.4f", True)}", f"{colorValueByLimit(meanRPM, RPM_DEVIATION_LIMIT, "%", RPM_DEVIATION_PREFERRED, TARGET_RPM, "+.4f", False, True)}"]
+                        tableData.extend([separatorRow, totalRow])
+                    print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right", "right", "right")))
+                    print()
 
             if choiceX == '12':
                 arrayFlutterStorage = []
@@ -129,6 +132,7 @@ def main():
                         print(f"| T | {WF_FREQUENCY:.2f} Hz | {np.mean(freqDetected):.2f} Hz |   {np.mean(valueDifference):+.4f} % | {np.mean(valueWowPercent):.4f} % | {np.mean(valueFlutterPercent):.4f} % | {np.mean(valueWF):.4f} % | {np.mean(valueWFRMS):.4f} % | {np.mean(valueWowPercentWeighted):.4f} % |    {np.mean(valueFlutterPercentWeighted):.4f} % |     {np.mean(valueWFW):.4f} % |    {colorValueByLimit(np.mean(valueWFWRMS), 0.1, "%")} |")
                         print("-" * 143)
                         print()
+           
             if choiceX == '13':
                 while True:
                     freqIMD1, freqIMD2, IMD = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)

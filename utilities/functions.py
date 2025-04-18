@@ -104,8 +104,15 @@ def colorTextGreen(stringX):
 def colorTextYellow(stringX):
     return "\033[33m" + stringX + "\033[0m"
 
-def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0):
-    valueFormat = f"{valueX:+.4f}{' ' + valueUnit if valueUnit else ''}"
+def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0, valueBaseline = 0, formatString = "+.4f", returnDifference = False, calculatePercentage = False):
+    valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
+    valuePercentage = (np.abs(valueX - valueBaseline) / valueBaseline) * 100
+    if (valueBaseline > 0):
+        valueX = np.abs(valueBaseline - valueX)
+        if (returnDifference):
+            valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
+        if (calculatePercentage):
+            valueFormat = f"{format(valuePercentage, formatString)}{' ' + valueUnit if valueUnit else ''}"
     if (valueX > valueLimit):
         return colorTextRed(valueFormat)
     if (valueMed != 0):
@@ -115,3 +122,24 @@ def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0):
             return colorTextGreen(valueFormat)
     else:
         return colorTextGreen(valueFormat)
+
+
+
+
+#def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0, valueBaseline = 0, formatString = "+.4f", returnDifference = False, calculatePercentage = False):
+#    valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
+#    valuePercentage = (np.abs(valueX - valueBaseline) / valueBaseline) * 100
+#    if (valueBaseline > 0):
+#        if (returnDifference):
+#            valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
+#        if (calculatePercentage):
+#            valueFormat = f"{format(valuePercentage, formatString)}{' ' + valueUnit if valueUnit else ''}"
+#    if (valueX > valueLimit):
+#        return colorTextRed(valueFormat)
+#    if (valueMed != 0):
+#        if (valueX > valueMed):
+#            return colorTextYellow(valueFormat)
+#        else:
+#            return colorTextGreen(valueFormat)
+#    else:
+#        return colorTextGreen(valueFormat)
