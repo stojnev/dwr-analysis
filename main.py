@@ -146,8 +146,6 @@ def main():
                 while True:
                     arrayIMDStorage = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage)
                     arrayNPIMD = np.array(arrayIMDStorage)
-                    print(IMD_DEVIATION_LIMIT)
-                    print(IMD_DEVIATION_LIMIT_PERCENT)
                     if CHANNELS == 1:
                         print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(arrayNPIMD[:, 0]):.2f} Hz, {np.mean(arrayNPIMD[:, 2]):.2f} Hz | IMD (%): {np.mean(arrayNPIMD[:, 4])*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(arrayNPIMD[:, 4])):.2f} dB")
                     if CHANNELS == 2:
