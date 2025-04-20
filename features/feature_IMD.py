@@ -1,8 +1,8 @@
 import numpy as np
-from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE
+from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, RATE, WF_SECONDS, SPLITBUFFER_FREQUENCY
 from utilities.functions import calculateProperPeakFrequency, getAmplitudeFromFrequency
 
-def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, harmonicDepth = 5):
+def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage, harmonicDepth = 5):
 
     IMD, freqIMD1, freqIMD2 = [0, 0], [0, 0], [0, 0]
 
@@ -24,6 +24,12 @@ def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, harmonicDepth = 5):
         numData = [bufferAudio.flatten() * FFTwindow]
     else:
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
+
+    if (WF_SECONDS * SPLITBUFFER_FREQUENCY) > 0:
+        if (len(arrayIMDStorage) > WF_SECONDS * SPLITBUFFER_FREQUENCY):
+            arrayIMDStorage.pop(0)
+    else:
+        arrayIMDStorage = []
 
     for channelX in range(CHANNELS):
         
@@ -56,4 +62,9 @@ def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, harmonicDepth = 5):
         freqIMD1[channelX] = calculateProperPeakFrequency(IMD_FREQ1, arrayFrequencies, arrayAmplitudes)
         freqIMD2[channelX] = calculateProperPeakFrequency(IMD_FREQ2, arrayFrequencies, arrayAmplitudes)
 
-    return freqIMD1, freqIMD2, IMD
+    if CHANNELS == 1:
+        arrayIMDStorage.append([freqIMD1[0], 0, freqIMD2[0], 0, IMD[0], 0])
+    else:
+        arrayIMDStorage.append([freqIMD1[0], freqIMD1[1], freqIMD2[0], freqIMD2[1], IMD[0], IMD[1]])
+
+    return arrayIMDStorage

@@ -137,16 +137,21 @@ def main():
                     print()
            
             if choiceX == '13':
+                arrayIMDStorage = []
                 while True:
-                    freqIMD1, freqIMD2, IMD = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2)
+                    arrayIMDStorage = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage)
+                    arrayNPIMD = np.array(arrayIMDStorage)
                     if CHANNELS == 1:
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[0]:.2f} Hz, {freqIMD2[0]:.2f} Hz | IMD (%): {IMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[0]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(arrayNPIMD[:, 0]):.2f} Hz, {np.mean(arrayNPIMD[:, 2]):.2f} Hz | IMD (%): {np.mean(arrayNPIMD[:, 4])*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(arrayNPIMD[:, 4])):.2f} dB")
                     if CHANNELS == 2:
+                        freqDetected1 = [np.mean(arrayNPIMD[:, 0]), np.mean(arrayNPIMD[:, 1])]
+                        freqDetected2 = [np.mean(arrayNPIMD[:, 2]), np.mean(arrayNPIMD[:, 3])]
+                        valueIMD = [np.mean(arrayNPIMD[:, 4]), np.mean(arrayNPIMD[:, 5])]
                         print("-" * 40)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[0]:.2f} Hz, {freqIMD2[0]:.2f} Hz | IMD (%): {IMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[0]):.2f} dB")
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqIMD1[1]:.2f} Hz, {freqIMD2[1]:.2f} Hz | IMD (%): {IMD[1]*100:.4f}% | IMD (dB): {calculatedBFromPercent(IMD[1]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[0]:.2f} Hz, {freqDetected2[0]:.2f} Hz | IMD (%): {valueIMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(valueIMD[0]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[1]:.2f} Hz, {freqDetected2[1]:.2f} Hz | IMD (%): {valueIMD[1]*100:.4f}% | IMD (dB): {calculatedBFromPercent(valueIMD[1]):.2f} dB")
                         print("-" * 20)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqIMD1):.2f} Hz, {np.mean(freqIMD2):.2f} Hz | IMD (%): {np.mean(IMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(IMD)):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqDetected1):.2f} Hz, {np.mean(freqDetected2):.2f} Hz | IMD (%): {np.mean(valueIMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(valueIMD)):.2f} dB")
 
             if choiceX == '14':
                 while True:
