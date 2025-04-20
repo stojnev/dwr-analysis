@@ -63,8 +63,8 @@ def get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage, harmonicDepth = 
         freqIMD2[channelX] = calculateProperPeakFrequency(IMD_FREQ2, arrayFrequencies, arrayAmplitudes)
 
     if CHANNELS == 1:
-        arrayIMDStorage.append([freqIMD1[0], 0, freqIMD2[0], 0, IMD[0], 0])
+        arrayIMDStorage.append([freqIMD1[0], 0, freqIMD2[0], 0, IMD[0] * 100, 0])
     else:
-        arrayIMDStorage.append([freqIMD1[0], freqIMD1[1], freqIMD2[0], freqIMD2[1], IMD[0], IMD[1]])
+        arrayIMDStorage.append([freqIMD1[0], freqIMD1[1], freqIMD2[0], freqIMD2[1], IMD[0] * 100, IMD[1] * 100])
 
     return arrayIMDStorage

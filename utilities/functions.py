@@ -30,6 +30,7 @@ def calculatePeakFreq(numData, optionExpanded=0):
         return valuePeakFrequency
 
 def calculatedBFromPercent(percentValue):
+    percentValue = percentValue / 100
     return 20 * np.log10(percentValue)
 
 def calculateTHDN(numData, harmonicDepth = 5):

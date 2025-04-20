@@ -20,6 +20,11 @@ WF_DEVIATION_LIMIT = 0.1
 WF_DEVIATION_PREFERRED = 0.05
 IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
+IMD_DEVIATION_LIMIT = 0.1
+IMD_DEVIATION_PREFERRED = 0.05
+IMD_DEVIATION_LIMIT_PERCENT = calculatedBFromPercent(IMD_DEVIATION_LIMIT)
+IMD_DEVIATION_PREFERRED_PERCENT = calculatedBFromPercent(IMD_DEVIATION_PREFERRED)
+
 freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
 freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
 
@@ -141,6 +146,8 @@ def main():
                 while True:
                     arrayIMDStorage = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage)
                     arrayNPIMD = np.array(arrayIMDStorage)
+                    print(IMD_DEVIATION_LIMIT)
+                    print(IMD_DEVIATION_LIMIT_PERCENT)
                     if CHANNELS == 1:
                         print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(arrayNPIMD[:, 0]):.2f} Hz, {np.mean(arrayNPIMD[:, 2]):.2f} Hz | IMD (%): {np.mean(arrayNPIMD[:, 4])*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(arrayNPIMD[:, 4])):.2f} dB")
                     if CHANNELS == 2:
@@ -148,10 +155,10 @@ def main():
                         freqDetected2 = [np.mean(arrayNPIMD[:, 2]), np.mean(arrayNPIMD[:, 3])]
                         valueIMD = [np.mean(arrayNPIMD[:, 4]), np.mean(arrayNPIMD[:, 5])]
                         print("-" * 40)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[0]:.2f} Hz, {freqDetected2[0]:.2f} Hz | IMD (%): {valueIMD[0]*100:.4f}% | IMD (dB): {calculatedBFromPercent(valueIMD[0]):.2f} dB")
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[1]:.2f} Hz, {freqDetected2[1]:.2f} Hz | IMD (%): {valueIMD[1]*100:.4f}% | IMD (dB): {calculatedBFromPercent(valueIMD[1]):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[0]:.2f} Hz, {freqDetected2[0]:.2f} Hz | IMD (%): {colorValueByLimit(valueIMD[0], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(valueIMD[0]), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[1]:.2f} Hz, {freqDetected2[1]:.2f} Hz | IMD (%): {colorValueByLimit(valueIMD[1], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(valueIMD[1]), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
                         print("-" * 20)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqDetected1):.2f} Hz, {np.mean(freqDetected2):.2f} Hz | IMD (%): {np.mean(valueIMD)*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(valueIMD)):.2f} dB")
+                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqDetected1):.2f} Hz, {np.mean(freqDetected2):.2f} Hz | IMD (%): {colorValueByLimit(np.mean(valueIMD), IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(np.mean(valueIMD)), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
 
             if choiceX == '14':
                 while True:
