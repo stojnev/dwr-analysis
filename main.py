@@ -22,8 +22,12 @@ IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
 IMD_DEVIATION_LIMIT = 0.1
 IMD_DEVIATION_PREFERRED = 0.05
-IMD_DEVIATION_LIMIT_PERCENT = calculatedBFromPercent(IMD_DEVIATION_LIMIT)
-IMD_DEVIATION_PREFERRED_PERCENT = calculatedBFromPercent(IMD_DEVIATION_PREFERRED)
+IMD_DEVIATION_LIMIT_DB = calculatedBFromPercent(IMD_DEVIATION_LIMIT)
+IMD_DEVIATION_PREFERRED_DB = calculatedBFromPercent(IMD_DEVIATION_PREFERRED)
+IMD_DEVIATION_LIMIT_FREQ1 = IMD_FREQ1 * IMD_DEVIATION_LIMIT / 100
+IMD_DEVIATION_PREFERRED_FREQ1 = IMD_FREQ1 * IMD_DEVIATION_PREFERRED / 100
+IMD_DEVIATION_LIMIT_FREQ2 = IMD_FREQ2 * IMD_DEVIATION_LIMIT / 100
+IMD_DEVIATION_PREFERRED_FREQ2 = IMD_FREQ2 * IMD_DEVIATION_PREFERRED / 100
 
 freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
 freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
@@ -146,17 +150,19 @@ def main():
                 while True:
                     arrayIMDStorage = get_IMD(streamAudio, IMD_FREQ1, IMD_FREQ2, arrayIMDStorage)
                     arrayNPIMD = np.array(arrayIMDStorage)
-                    if CHANNELS == 1:
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(arrayNPIMD[:, 0]):.2f} Hz, {np.mean(arrayNPIMD[:, 2]):.2f} Hz | IMD (%): {np.mean(arrayNPIMD[:, 4])*100:.4f}% | IMD (dB): {calculatedBFromPercent(np.mean(arrayNPIMD[:, 4])):.2f} dB")
-                    if CHANNELS == 2:
-                        freqDetected1 = [np.mean(arrayNPIMD[:, 0]), np.mean(arrayNPIMD[:, 1])]
-                        freqDetected2 = [np.mean(arrayNPIMD[:, 2]), np.mean(arrayNPIMD[:, 3])]
-                        valueIMD = [np.mean(arrayNPIMD[:, 4]), np.mean(arrayNPIMD[:, 5])]
-                        print("-" * 40)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[0]:.2f} Hz, {freqDetected2[0]:.2f} Hz | IMD (%): {colorValueByLimit(valueIMD[0], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(valueIMD[0]), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {freqDetected1[1]:.2f} Hz, {freqDetected2[1]:.2f} Hz | IMD (%): {colorValueByLimit(valueIMD[1], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(valueIMD[1]), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
-                        print("-" * 20)
-                        print(f"Test Frequencies: {IMD_FREQ1:.2f} Hz, {IMD_FREQ2:.2f} Hz | Detected Frequencies: {np.mean(freqDetected1):.2f} Hz, {np.mean(freqDetected2):.2f} Hz | IMD (%): {colorValueByLimit(np.mean(valueIMD), IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)} | IMD (dB): {colorValueByLimit(calculatedBFromPercent(np.mean(valueIMD)), IMD_DEVIATION_LIMIT_PERCENT, "dB", IMD_DEVIATION_PREFERRED_PERCENT, 0, "+.2f")}")
+                    tableData = []
+                    tableHeaders = [" ", "Base Low", "Base High", "Detected Low", "Detected High", "IMD (%)", "IMD (dB)"]
+                    freqDetected1 = [np.mean(arrayNPIMD[:, 0]), np.mean(arrayNPIMD[:, 1])]
+                    freqDetected2 = [np.mean(arrayNPIMD[:, 2]), np.mean(arrayNPIMD[:, 3])]
+                    valueIMD = [np.mean(arrayNPIMD[:, 4]), np.mean(arrayNPIMD[:, 5])]
+                    tableData.append(["L", f"{IMD_FREQ1:.2f} Hz", f"{IMD_FREQ2:.2f} Hz", f"{colorValueByLimit(freqDetected1[0], IMD_DEVIATION_LIMIT_FREQ1, "Hz", IMD_DEVIATION_PREFERRED_FREQ1, IMD_FREQ1, ".2f")}", f"{colorValueByLimit(freqDetected2[0], IMD_DEVIATION_LIMIT_FREQ2, "Hz", IMD_DEVIATION_PREFERRED_FREQ2, IMD_FREQ2, ".2f")}", f"{colorValueByLimit(valueIMD[0], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(calculatedBFromPercent(valueIMD[0]), IMD_DEVIATION_LIMIT_DB, "dB", IMD_DEVIATION_PREFERRED_DB, 0, "+.2f")}"])
+                    if CHANNELS > 1:
+                        tableData.append(["R", f"{IMD_FREQ1:.2f} Hz", f"{IMD_FREQ2:.2f} Hz", f"{colorValueByLimit(freqDetected1[1], IMD_DEVIATION_LIMIT_FREQ1, "Hz", IMD_DEVIATION_PREFERRED_FREQ1, IMD_FREQ1, ".2f")}", f"{colorValueByLimit(freqDetected2[1], IMD_DEVIATION_LIMIT_FREQ2, "Hz", IMD_DEVIATION_PREFERRED_FREQ2, IMD_FREQ2, ".2f")}", f"{colorValueByLimit(valueIMD[1], IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(calculatedBFromPercent(valueIMD[1]), IMD_DEVIATION_LIMIT_DB, "dB", IMD_DEVIATION_PREFERRED_DB, 0, "+.2f")}"])
+                        separatorRow = [" ", "-----", "-----", "-----", "-----", "-----", "-----"]
+                        totalRow = ["T", f"{IMD_FREQ1:.2f} Hz", f"{IMD_FREQ2:.2f} Hz", f"{colorValueByLimit(np.mean(freqDetected1), IMD_DEVIATION_LIMIT_FREQ1, "Hz", IMD_DEVIATION_PREFERRED_FREQ1, IMD_FREQ1, ".2f")}", f"{colorValueByLimit(np.mean(freqDetected2), IMD_DEVIATION_LIMIT_FREQ2, "Hz", IMD_DEVIATION_PREFERRED_FREQ2, IMD_FREQ2, ".2f")}", f"{colorValueByLimit(np.mean(valueIMD), IMD_DEVIATION_LIMIT, "%", IMD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(calculatedBFromPercent(np.mean(valueIMD)), IMD_DEVIATION_LIMIT_DB, "dB", IMD_DEVIATION_PREFERRED_DB, 0, "+.2f")}"]
+                        tableData.extend([separatorRow, totalRow])
+                    print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right", "right", "right", "right")))
+                    print()
 
             if choiceX == '14':
                 while True:

@@ -107,8 +107,8 @@ def colorTextYellow(stringX):
 
 def colorValueByLimit(valueX, valueLimit, valueUnit = "", valueMed = 0, valueBaseline = 0, formatString = "+.4f", returnDifference = False, calculatePercentage = False):
     valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
-    valuePercentage = (np.abs(valueX - valueBaseline) / valueBaseline) * 100
     if (valueBaseline > 0):
+        valuePercentage = (np.abs(valueX - valueBaseline) / valueBaseline) * 100
         valueX = np.abs(valueBaseline - valueX)
         if (returnDifference):
             valueFormat = f"{format(valueX, formatString)}{' ' + valueUnit if valueUnit else ''}"
