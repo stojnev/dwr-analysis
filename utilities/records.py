@@ -1,5 +1,6 @@
 import json
 import tabulate
+import textwrap
 from utilities.functions import colorTextRed, colorTextGreen, colorTextYellow
 
 jsonRecordsFilePath = 'config/functionalities/test_records.json'
@@ -35,7 +36,8 @@ def getSetRecordList(recordList=None):
         functionList = recordX['Functions']
         functionNames = [dictFunctionalities[func['ID']] for func in functionList]
         functionNames.sort()
-        dataTable.append([recordName, ', '.join(functionNames)])
+        wrapWidth = 80
+        dataTable.append([recordName, textwrap.fill(', '.join(functionNames), width=wrapWidth)])
 
     dataTable.sort(key=lambda x: x[0])
     return dataTable
