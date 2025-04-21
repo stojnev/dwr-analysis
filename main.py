@@ -22,12 +22,17 @@ IMD_FREQ1 = 60
 IMD_FREQ2 = 4000
 IMD_DEVIATION_LIMIT = 0.1
 IMD_DEVIATION_PREFERRED = 0.05
+THD_DEVIATION_LIMIT = 0.05
+THD_DEVIATION_PREFERRED = 0.01
+
 IMD_DEVIATION_LIMIT_DB = calculatedBFromPercent(IMD_DEVIATION_LIMIT)
 IMD_DEVIATION_PREFERRED_DB = calculatedBFromPercent(IMD_DEVIATION_PREFERRED)
 IMD_DEVIATION_LIMIT_FREQ1 = IMD_FREQ1 * IMD_DEVIATION_LIMIT / 100
 IMD_DEVIATION_PREFERRED_FREQ1 = IMD_FREQ1 * IMD_DEVIATION_PREFERRED / 100
 IMD_DEVIATION_LIMIT_FREQ2 = IMD_FREQ2 * IMD_DEVIATION_LIMIT / 100
 IMD_DEVIATION_PREFERRED_FREQ2 = IMD_FREQ2 * IMD_DEVIATION_PREFERRED / 100
+THD_DEVIATION_LIMIT_DB = calculatedBFromPercent(THD_DEVIATION_LIMIT)
+THD_DEVIATION_PREFERRED_DB = calculatedBFromPercent(THD_DEVIATION_PREFERRED)
 
 freqAllowedLimit = int(WF_FREQUENCY * (RPM_DEVIATION_LIMIT / TARGET_RPM))
 freqAllowedPreferred = int(WF_FREQUENCY * (RPM_DEVIATION_PREFERRED / TARGET_RPM))
@@ -172,14 +177,16 @@ def main():
                     peakFrequency = [np.mean(arrayNPTHD[:, 0]), np.mean(arrayNPTHD[:, 1])]
                     THDN = [np.mean(arrayNPTHD[:, 2]), np.mean(arrayNPTHD[:, 3])]
                     percentTHDN = [np.mean(arrayNPTHD[:, 4]), np.mean(arrayNPTHD[:, 5])]
-                    if CHANNELS == 1:
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N (dB): {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
-                    if CHANNELS == 2:
-                        print("-" * 40)
-                        print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N: (dB) {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
-                        print(f"Peak Frequency: {peakFrequency[1]:.2f} Hz, THD+N: (dB) {THDN[1]:.4f} dB, THD+N (%): {percentTHDN[1]:.4f}")
-                        print("-" * 20)
-                        print(f"Peak Frequency: {np.mean(peakFrequency):.2f} Hz, THD+N: (dB) {np.mean(THDN):.4f} dB, THD+N (%): {np.mean(percentTHDN):.4f}")
+                    tableData = []
+                    tableHeaders = [" ", "Peak Frequency", "THD+N (%)", "THD+N (dB)"]
+                    tableData.append(["L", f"{peakFrequency[0]:.2f} Hz", f"{colorValueByLimit(percentTHDN[0], THD_DEVIATION_LIMIT, "%", THD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(THDN[0], THD_DEVIATION_LIMIT_DB, "dB", THD_DEVIATION_PREFERRED_DB)}"])
+                    if CHANNELS > 1:
+                        tableData.append(["R", f"{peakFrequency[1]:.2f} Hz", f"{colorValueByLimit(percentTHDN[1], THD_DEVIATION_LIMIT, "%", THD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(THDN[1], THD_DEVIATION_LIMIT_DB, "dB", THD_DEVIATION_PREFERRED_DB)}"])
+                        separatorRow = [" ", "-----", "-----", "-----"]
+                        totalRow = ["T", f"{np.mean(peakFrequency):.2f} Hz", f"{colorValueByLimit(np.mean(percentTHDN), THD_DEVIATION_LIMIT, "%", THD_DEVIATION_PREFERRED)}", f"{colorValueByLimit(np.mean(THDN), THD_DEVIATION_LIMIT_DB, "dB", THD_DEVIATION_PREFERRED_DB)}"]
+                        tableData.extend([separatorRow, totalRow])
+                    print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right")))
+                    print()
 
             if (choiceX == 'X' or choiceX == 'x'):
                 print("Exiting...")
