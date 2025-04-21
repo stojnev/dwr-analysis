@@ -4,7 +4,7 @@
 
 At the moment, it is a fairly broken set of code snippets, moving forward at a snail's pace.
 
-Hopefully to resemble a usable application at some point in time.
+*Hopefully to resemble a usable application at some point in time.*
 
 ## Requirements
 
@@ -32,6 +32,10 @@ Note that the list of supported test records resides within `config\functionalit
 
 Most of the parameters ar set within the `config/stream.py` file.
 
-At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering. Change at your own peril.
+At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering.
 
-*This is very much a work in progress. Note there still may be many validation issues across the board with pending fixes.*
+Change at your own peril.
+
+*This is very much a work in progress.*
+
+*Note there still may be many validation issues across the board with pending fixes.*
