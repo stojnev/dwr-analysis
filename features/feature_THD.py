@@ -1,8 +1,8 @@
 import numpy as np
-from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, HARMONIC_DEPTH
+from config.stream import CHANNELS, SMALL_CHUNK, OVERLAP_COUNT, OVERLAP_SIZE, LARGE_CHUNK, HARMONIC_DEPTH, WF_SECONDS, SPLITBUFFER_FREQUENCY
 from utilities.functions import calculateTHDN
 
-def get_THDN(streamAudio):
+def get_THDN(streamAudio, arrayTHDStorage):
 
     peakFreq, THDN, percentTHDN = [0, 0], [0, 0], [0, 0]
 
@@ -25,7 +25,22 @@ def get_THDN(streamAudio):
     else:
         numData = [bufferAudio[:, :, 0].flatten() * FFTwindow, bufferAudio[:, :, 1].flatten() * FFTwindow]
 
-    for channelX in range(CHANNELS):
-        peakFreq[channelX], THDN[channelX], percentTHDN[channelX] = calculateTHDN(numData[channelX], HARMONIC_DEPTH)
+    if (WF_SECONDS * SPLITBUFFER_FREQUENCY) > 0:
+        if (len(arrayTHDStorage) > WF_SECONDS * SPLITBUFFER_FREQUENCY):
+            arrayTHDStorage.pop(0)
+    else:
+        arrayTHDStorage = []
 
-    return peakFreq, THDN, percentTHDN
+
+#    for channelX in range(CHANNELS):
+#        peakFreq[channelX], THDN[channelX], percentTHDN[channelX] = calculateTHDN(numData[channelX], HARMONIC_DEPTH)
+
+    peakFreq[0], THDN[0], percentTHDN[0] = calculateTHDN(numData[0], HARMONIC_DEPTH)
+    if CHANNELS == 1:
+        arrayTHDStorage.append([peakFreq[0], 0, THDN[0], 0, percentTHDN[0], 0])
+    else:
+        peakFreq[1], THDN[1], percentTHDN[1] = calculateTHDN(numData[1], HARMONIC_DEPTH)
+        arrayTHDStorage.append([peakFreq[0], peakFreq[1], THDN[0], THDN[1], percentTHDN[0], percentTHDN[1]])
+
+
+    return arrayTHDStorage

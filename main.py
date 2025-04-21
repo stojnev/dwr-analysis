@@ -163,10 +163,15 @@ def main():
                         tableData.extend([separatorRow, totalRow])
                     print(tabulate(tableData, headers=tableHeaders, tablefmt="grid", colalign=("left", "right", "right", "right", "right", "right", "right")))
                     print()
-
+                    
             if choiceX == '14':
+                arrayTHDStorage = []
                 while True:
-                    peakFrequency, THDN, percentTHDN = get_THDN(streamAudio)
+                    arrayTHDStorage = get_THDN(streamAudio, arrayTHDStorage)
+                    arrayNPTHD = np.array(arrayTHDStorage)
+                    peakFrequency = [np.mean(arrayNPTHD[:, 0]), np.mean(arrayNPTHD[:, 1])]
+                    THDN = [np.mean(arrayNPTHD[:, 2]), np.mean(arrayNPTHD[:, 3])]
+                    percentTHDN = [np.mean(arrayNPTHD[:, 4]), np.mean(arrayNPTHD[:, 5])]
                     if CHANNELS == 1:
                         print(f"Peak Frequency: {peakFrequency[0]:.2f} Hz, THD+N (dB): {THDN[0]:.4f} dB, THD+N (%): {percentTHDN[0]:.4f}")
                     if CHANNELS == 2:
