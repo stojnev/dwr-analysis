@@ -8,7 +8,7 @@ At the moment, it is a fairly broken set of code snippets, moving forward at a s
 
 ## Requirements
 
-Currently only as a set of Python scripts. Dependencies within `requirements.txt`.
+Dependencies within `requirements.txt`.
 
 ## Usage
 
@@ -16,7 +16,7 @@ Run `main.py` and be presented with a list of currently supported functions, i.e
 
 ## Features
 
-With the *semblance* of a user interface, all possible functionalities are now listed within the `config\functionalities\test_functions.json`. That said, the *available* functionalities depend on the choices one makes regarding the available test records.
+With the *semblance* of a user interface, all possible functionalities are now listed within the `config\functionalities\test_functions.json`. That said, the *available* functionalities depend on the choices one makes regarding availability of test records, most specifically the included tones.
 
 When first running, the following options are available:
 
@@ -30,7 +30,7 @@ Note that the list of supported test records resides within `config\functionalit
 
 ## Parameters
 
-Most of the parameters ar set within the `config/stream.py` file.
+Most of the parameters are set within the `config/stream.py` file.
 
 At the time of writing, default settings have it expecting two channels, a 44.1kHz sample rate, the default device, and a 4Hz point for W&F curve centering.
 
